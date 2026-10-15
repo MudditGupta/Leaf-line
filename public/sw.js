@@ -1,5 +1,5 @@
 // Leafline service worker: installable app, offline shell, and watering push notifications.
-const CACHE = "leafline-v3";
+const CACHE = "leafline-v4";
 const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg", "/icon-192.png"];
 
 self.addEventListener("install", e => {
