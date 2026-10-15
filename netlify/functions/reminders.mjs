@@ -15,9 +15,9 @@ export default async (req) => {
     if (!PUSH_HOSTS.test(host) || typeof sub?.keys?.p256dh !== "string" || typeof sub?.keys?.auth !== "string") return Response.json({ error: "Bad subscription." }, { status: 400 });
     const clean = { endpoint: String(sub.endpoint).slice(0, 800), keys: { p256dh: sub.keys.p256dh.slice(0, 200), auth: sub.keys.auth.slice(0, 100) } };
     const plants = (Array.isArray(body.plants) ? body.plants : []).slice(0, 200).map(p => ({
-      id: String(p.id).slice(0, 40), name: String(p.name).slice(0, 60), next: Number(p.next) || 0,
+      id: String(p.id).slice(0, 40), name: String(p.name).slice(0, 60), next: Number(p.next) || 0, nextFeed: Number(p.nextFeed) || 0,
     }));
-    await store.setJSON(id, { subscription: clean, plants, lang: body.lang === "hi" ? "hi" : "en", updated: Date.now() });
+    await store.setJSON(id, { subscription: clean, plants, lang: body.lang === "hi" ? "hi" : "en", hour: [7, 9, 13, 18, 20].includes(Number(body.hour)) ? Number(body.hour) : 9, updated: Date.now() });
     return Response.json({ ok: true });
   } catch (e) {
     return Response.json({ error: "Couldn't save reminders. Try again." }, { status: 500 });
