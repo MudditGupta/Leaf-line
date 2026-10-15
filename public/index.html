@@ -90,6 +90,23 @@ p{margin:0}
 .empty{background:var(--surface);border-radius:24px;padding:32px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow)}
 .ex{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:6px}
 
+/* welcome */
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.02em}
+.logo{width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.hero-card{background:#13201A;color:#EEF2EC;border-radius:32px;padding:20px;display:flex;flex-direction:column;gap:20px;overflow:hidden}
+.hero-art{position:relative;height:250px;border-radius:22px;background:#1B2A21;display:grid;place-items:center;overflow:hidden}
+.hero-art>svg{width:230px;height:auto;margin-top:40px}
+.tag{position:absolute;display:inline-flex;align-items:center;gap:6px;background:#EEF2EC;color:#13201A;font-size:12px;font-weight:800;padding:7px 11px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.tag svg{width:15px;height:15px}
+.t1{top:22px;left:16px}.t2{top:92px;right:14px}.t3{bottom:22px;left:28px;background:#F4C95D}
+.hero-copy h1{font-size:34px;font-weight:800;color:#FFFFFF}
+.hero-copy p{color:#A9B8AE;margin-top:10px;font-size:15px}
+.sunbtn{background:#F4C95D;color:#13201A}
+.how{display:flex;flex-direction:column;gap:10px}
+.howi{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}
+.howi .n{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;flex:none}
+.howi b{display:block;font-size:15px}.howi small{color:var(--muted);font-size:13px}
+
 /* scan */
 .cam{position:fixed;inset:0;background:#0B110E;color:#fff;display:flex;flex-direction:column;z-index:5}
 .cam .view{position:relative;flex:1;overflow:hidden;display:grid;place-items:center}
@@ -234,6 +251,8 @@ const I={
   alert:sv('<path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17v.5"/>',22,2.2),
   send:sv('<path d="M5 12h14M13 6l6 6-6 6"/>',20,2.2),
   gallery:sv('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',24,1.8),
+  leaf:sv('<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/>',20,2.2),
+  scan:sv('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>',22,2.2),
   bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
 };
 const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
@@ -254,12 +273,7 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 function load(){try{const v=JSON.parse(localStorage.getItem("leafline.plants"));if(Array.isArray(v))return v}catch(e){}return null}
 function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){}}
 const now=Date.now();
-let plants=load()??[
- {id:"ex1",example:true,name:"Monstera",sci:"Monstera deliciosa",loc:"Living room",every:7,last:now-7*DAY,care:{light:"Bright, indirect",humidity:"Medium–high",temp:"18–29 °C",soil:"Chunky aroid mix",fertilizer:"Monthly in spring–summer",toxic:"Toxic to cats and dogs",difficulty:"Easy",tips:["Wipe leaves monthly so they can breathe","Add a moss pole once it starts climbing","Rotate a quarter turn each week for even growth"]}},
- {id:"ex2",example:true,name:"Golden pothos",sci:"Epipremnum aureum",loc:"Kitchen",every:7,last:now-8*DAY,care:{light:"Low to bright, indirect",humidity:"Medium",temp:"15–30 °C",soil:"Standard potting mix",fertilizer:"Every 6–8 weeks",toxic:"Toxic to cats and dogs",difficulty:"Easy",tips:["Let the top 3 cm dry out between waterings","Pinch long vines to keep it bushy"]}},
- {id:"ex3",example:true,name:"Snake plant",sci:"Dracaena trifasciata",loc:"Bedroom",every:14,last:now-10*DAY,care:{light:"Low to bright",humidity:"Low",temp:"15–30 °C",soil:"Cactus mix",fertilizer:"2–3 times a year",toxic:"Mildly toxic to pets",difficulty:"Easy",tips:["Overwatering is the main killer","Water half as often in winter"]}},
- {id:"ex4",example:true,name:"Fiddle leaf fig",sci:"Ficus lyrata",loc:"Balcony",every:9,last:now-8*DAY,care:{light:"Bright, some direct",humidity:"Medium",temp:"16–27 °C",soil:"Well-draining mix",fertilizer:"Monthly in growing season",toxic:"Toxic to pets",difficulty:"Moderate",tips:["Hates being moved; pick a spot and keep it","Brown spots usually mean overwatering"]}}
-];
+let plants=(load()??[]).filter(p=>!p.example);
 let view="home", current=null, filter="All";
 let scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null};
 
@@ -300,7 +314,24 @@ async function aiAsk(ctx,q,onText){
 }
 
 /* ---------- screens ---------- */
+function vWelcome(){
+  return `<div class="screen pad welcome">
+    <div class="between"><div class="brand"><span class="logo">${I.leaf}</span>Leafline</div></div>
+    <section class="hero-card">
+      <div class="hero-art" aria-hidden="true"><svg viewBox="0 0 64 70" fill="none" stroke="#0E1612" stroke-width=".5" stroke-linejoin="round"><path d="M32 70V30"/><path d="M32 44c-16 0-26-10-26-26 15 0 26 9 26 26Z" fill="#3E7A58"/><path d="M32 38c13 0 22-8 22-22-13 0-22 7-22 22Z" fill="#5CA57A"/><path d="M32 58c-10 0-17-5-18-14 10 0 17 5 18 14Z" fill="#2F6347"/><path d="M14 28c5 2 10 6 13 11M50 22c-4 2-9 6-12 11" stroke="#1E4A33" stroke-width=".8"/></svg>
+        <span class="tag t1">${I.drop} Every 7 days</span><span class="tag t2">${I.sun} Bright, indirect</span><span class="tag t3">${I.check} 94% match</span></div>
+      <div class="hero-copy"><h1>Know every plant you own.</h1>
+        <p>Point your camera at any plant. Get its name, a care plan and a health check in seconds.</p></div>
+      <button class="btn sunbtn" data-go="scan">${I.scan} Scan your first plant</button>
+    </section>
+    <div class="how">
+      <div class="howi"><span class="n">1</span><div><b>Snap a photo</b><small>Leaves in frame, daylight is best</small></div></div>
+      <div class="howi"><span class="n">2</span><div><b>Get the care plan</b><small>Water, light, soil, pets and problems</small></div></div>
+      <div class="howi"><span class="n">3</span><div><b>Never forget watering</b><small>Your plants, with a countdown for each</small></div></div>
+    </div>
+  </div>`}
 function vHome(){
+  if(!plants.length)return vWelcome();
   const sorted=[...plants].sort((a,b)=>due(a)-due(b)), thirsty=sorted.filter(p=>due(p)<=0);
   const locs=["All",...new Set(plants.map(p=>p.loc))];
   const list=sorted.filter(p=>filter==="All"||p.loc===filter);
@@ -322,7 +353,7 @@ function vHome(){
         <div class="pic" style="background:${tint(p.name)}">${pic(p)}<span class="badge ${dd<=0?"due":""}">${dueTxt(dd)}</span></div>
         <div class="info"><div class="nm">${esc(p.name)}</div><div class="lc">${esc(p.loc)}${p.example?'<span class="ex">Example</span>':""}</div>
         <div class="meter" role="img" aria-label="Water left ${Math.round(left(p)*100)}%"><i style="width:${Math.round(left(p)*100)}%"></i></div></div></button>`}).join("")}</div>`
-    :`<div class="empty"><div style="width:120px">${art("start")}</div><h3>Start your collection</h3><p class="muted">Scan any plant to learn its name and how to care for it.</p><button class="btn" data-go="scan" style="margin-top:8px">Scan a plant</button></div>`}
+    :""}
   </div>`}
 
 function vScan(){
