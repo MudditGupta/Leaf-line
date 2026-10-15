@@ -114,8 +114,8 @@ p{margin:0}
 .cam .bg-leaf{position:absolute;inset:0;display:grid;place-items:center}
 .cam .top{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:0;right:0;display:flex;justify-content:space-between;align-items:center;z-index:2}
 .seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(14,20,17,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.seg span{height:34px;padding:0 14px;border-radius:999px;display:grid;place-items:center;font-size:13px;font-weight:700}
-.seg span.on{background:#fff;color:#13201A}
+.seg button{height:36px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:#fff;font-size:13px;font-weight:800}
+.seg button.on{background:#fff;color:#13201A}
 .frame{position:relative;width:min(72vw,300px);aspect-ratio:5/6;z-index:1}
 .frame i{position:absolute;width:46px;height:46px;border:4px solid #F4C95D}
 .frame i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-top-left-radius:24px}
@@ -124,16 +124,25 @@ p{margin:0}
 .frame i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-bottom-right-radius:24px}
 .hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(14,20,17,.7);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:2}
 .hint b{width:8px;height:8px;border-radius:50%;background:#7FD4A4}
-.cam .bar{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;background:#0B110E}
+.cam .bar{padding-top:18px;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;background:#0B110E}
 .ctrls{width:100%;max-width:340px;display:flex;align-items:center;justify-content:space-between}
-.shutter{width:84px;height:84px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center;cursor:pointer;position:relative}
-.shutter span{width:64px;height:64px;border-radius:50%;background:#fff;transition:transform .15s}
+.shutter{width:78px;height:78px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center;cursor:pointer;position:relative}
+.shutter span{width:58px;height:58px;border-radius:50%;background:#fff;transition:transform .15s}
 .shutter:active span{transform:scale(.9)}
 .side{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#1F2A24;cursor:pointer;color:#fff;position:relative;border:0}
 .fileinput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .cam .note{font-size:13px;color:#A9B8AE;text-align:center}
 .cam .err{width:100%;max-width:440px;background:#3A1E19;color:#F7C8BE;border-radius:14px;padding:12px 14px;font-size:14px}
 
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0B110E}
+.camstate{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:300px;padding:0 20px}
+.camstate b{font-size:18px}.camstate span{color:#A9B8AE;font-size:14px}
+.camstate .bigic{width:64px;height:64px;border-radius:20px;background:#1F2A24;display:grid;place-items:center;color:#fff}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid #2E3B33;border-top-color:#5CC08F;animation:spin .8s linear infinite}
+.ctl{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#D3DDD6;background:none;border:0;padding:0;cursor:pointer;width:96px;position:relative}
+.ctl .side{margin:0}
+.shutter.hc{border-color:#F4C95D}.shutter.hc span{background:#F4C95D}
+.errbtn{margin-left:8px;background:#F7C8BE;color:#3A1E19;border:0;border-radius:999px;padding:4px 10px;font-weight:800;font-size:13px}
 /* analyzing */
 .scanline{position:absolute;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(127,212,164,0) 0%,rgba(127,212,164,.35) 85%,rgba(127,212,164,.9) 100%);animation:sweep 2.2s ease-in-out infinite;z-index:1}
 @keyframes sweep{0%{top:-120px}100%{top:100%}}
@@ -183,6 +192,27 @@ p{margin:0}
 .dock .in{max-width:480px;margin:0 auto;display:flex;gap:10px}
 .dock .btn.soft{width:auto;flex:none}
 
+.verdict{border-radius:22px;padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;position:relative}
+.verdict.ok{background:var(--accent-soft)}.verdict.ok .hic{color:var(--accent)}
+.verdict.warn{background:var(--sun-soft)}.verdict.warn .hic{color:var(--sun-deep)}
+.verdict.bad{background:var(--bad-soft)}.verdict.bad .hic{color:var(--bad)}
+.verdict>div{flex:1;min-width:0}.verdict b{display:block;font-size:17px}.verdict p{font-size:15px;margin-top:4px}
+.urg{font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;background:var(--surface);color:var(--ink)}
+.roompill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:800}
+.roompill span{color:var(--accent);font-weight:800;margin-left:2px}
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(8,12,10,.5);z-index:20;animation:fade .2s}
+.modal{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:28px 28px 0 0;padding-top:10px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease-out;max-height:90vh;overflow:auto}
+.modal .in{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.grab{width:44px;height:5px;border-radius:5px;background:var(--line);align-self:center}
+.modal h2{font-size:24px;font-weight:800}
+.field{display:flex;flex-direction:column;gap:8px}
+.field>span{font-size:13px;font-weight:800;color:var(--muted)}
+.field input{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.chips.wrap{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+.chip.dashed{border-style:dashed;display:inline-flex;align-items:center;gap:6px;color:var(--accent)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}@keyframes fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.modal,.scrim{animation:none}}
 /* detail */
 .waterbox{background:var(--surface);border-radius:24px;padding:18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:18px}
 .ring{position:relative;width:96px;height:96px;flex:none}
@@ -253,6 +283,9 @@ const I={
   gallery:sv('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',24,1.8),
   leaf:sv('<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/>',20,2.2),
   scan:sv('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>',22,2.2),
+  flip:sv('<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',24,1.8),
+  pin:sv('<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/>',15,2.2),
+  plus:sv('<path d="M12 5v14M5 12h14"/>',15,2.4),
   bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
 };
 const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
@@ -275,7 +308,9 @@ function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants
 const now=Date.now();
 let plants=(load()??[]).filter(p=>!p.example);
 let view="home", current=null, filter="All";
-let scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null};
+let scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null,mode:"identify"};
+let sheet=null; // {kind:"add"|"edit", name, loc, id}
+let cam={stream:null,state:"idle",facing:"environment"}; // state: idle|starting|live|blocked|none
 
 const due=p=>Math.round((p.last+p.every*DAY-Date.now())/DAY);
 const dueTxt=d=>d<=0?"Water today":d===1?"Tomorrow":`In ${d} days`;
@@ -296,6 +331,14 @@ Reply with ONLY a JSON object of this exact shape:
 "health":{"status":"healthy|minor|serious","headline":"short verdict","detail":"what you see and what to do, 1-2 sentences"},
 "tips":["3-4 short practical tips"],"problems":["2-3 common problems for this plant"],"alternatives":["up to 2 other species it might be"]}
 If the photo has no plant, return {"is_plant":false}. Keep every string short.`;
+const HEALTH_PROMPT=`You are a plant doctor. Look closely at the plant in the photo and diagnose its health.
+Reply with ONLY a JSON object of this exact shape:
+{"is_plant":true,"name":"common name","scientific":"Genus species","confidence":0-100,
+"status":"healthy|minor|serious","headline":"short verdict, e.g. Overwatering and early root rot",
+"diagnosis":"what you see and what it means, 1-2 plain sentences",
+"urgency":"Act today|This week|No action needed",
+"causes":["up to 3 likely causes"],"treatment":["3-5 concrete steps to take now, in order"],"prevention":["2-3 short tips to stop it coming back"]}
+If the photo has no plant, return {"is_plant":false}. Keep every string short.`;
 const CLAUDE_ERR={not_granted:"Access was declined. Reload the page and tap Allow.",rate_limited:"Too many scans at once. Wait a minute and try again.",image_rejected:"That photo couldn't be read. Try another one.",images_unavailable:"This view can't send photos. Open the link in Chrome.",invalid_json:"The answer came back garbled. Try again.",refused:"This photo couldn't be analysed. Try a different one."};
 let claudeAI=null;
 if(window.claude?.use) window.claude.use("sample").then(f=>{claudeAI=f}).catch(()=>{});
@@ -304,9 +347,9 @@ async function api(path,body){
   let r;try{r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})}catch(e){throw new Error("No internet connection. Check it and try again.")}
   const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Something went wrong. Try again.");return j;
 }
-async function aiIdentify(blob){
-  if(claudeAI){try{return await claudeAI.json(PROMPT,{images:blob})}catch(e){throw new Error(CLAUDE_ERR[e?.code]||"Couldn't reach the plant expert. Try again.")}}
-  return api("/api/identify",{image:await toB64(blob),mime:"image/jpeg"});
+async function aiIdentify(blob,mode="identify"){
+  if(claudeAI){try{return await claudeAI.json(mode==="health"?HEALTH_PROMPT:PROMPT,{images:blob})}catch(e){throw new Error(CLAUDE_ERR[e?.code]||"Couldn't reach the plant expert. Try again.")}}
+  return api("/api/identify",{image:await toB64(blob),mime:"image/jpeg",mode});
 }
 async function aiAsk(ctx,q,onText){
   if(claudeAI){try{const {text}=await claudeAI(`You are a friendly plant-care expert. ${ctx}\n\nAnswer the owner's question in 3-5 short sentences, practical and specific. Plain text, no markdown.\n\nQuestion: ${q}`,{onText:({text})=>onText(text),cache:false});return text}catch(e){throw new Error(e?.text||CLAUDE_ERR[e?.code]||"Couldn't get an answer. Try again.")}}
@@ -357,25 +400,33 @@ function vHome(){
   </div>`}
 
 function vScan(){
-  const busy=scan.busy;
+  const busy=scan.busy, health=scan.mode==="health", live=cam.state==="live"&&!scan.url;
+  const noCam=!scan.url&&(cam.state==="blocked"||cam.state==="none");
+  const steps=health?["Looking at leaves and stems","Checking for pests, rot and deficiencies","Writing a treatment plan"]:["Finding leaves","Matching against thousands of species","Writing your care guide"];
   return `<div class="cam">
     <div class="view">
-      ${scan.url?`<img alt="Your photo" src="${scan.url}">`:`<div class="bg-leaf"><svg width="380" height="420" viewBox="0 0 64 70" fill="none" stroke="#0B110E" stroke-width=".5" stroke-linejoin="round" aria-hidden="true"><path d="M32 70V30"/><path d="M32 44c-16 0-26-10-26-26 15 0 26 9 26 26Z" fill="#2F6347"/><path d="M32 38c13 0 22-8 22-22-13 0-22 7-22 22Z" fill="#3E7A58"/><path d="M32 58c-10 0-17-5-18-14 10 0 17 5 18 14Z" fill="#254F39"/></svg></div>`}
+      ${scan.url?`<img alt="Your photo" src="${scan.url}">`:`<video id="video" autoplay playsinline muted ${live?"":"hidden"}></video>`}
+      ${!scan.url&&cam.state==="starting"?`<div class="camstate"><div class="spin"></div><b>Opening camera…</b><span>Tap Allow if your browser asks.</span></div>`:""}
+      ${noCam?`<div class="camstate"><span class="bigic">${I.gallery}</span><b>${cam.state==="blocked"?"Camera access is off":"No camera found"}</b><span>${cam.state==="blocked"?"Allow camera for this site in your browser settings, or upload a photo instead.":"Upload a photo of your plant instead."}</span>
+        <label class="btn sunbtn" for="pick" style="width:auto;margin-top:6px">Upload a photo</label></div>`:""}
       ${busy?'<div class="scanline"></div>':""}
       <div class="top pad"><button class="round glass" id="closecam" aria-label="Close">${I.close}</button>
-        <div class="seg"><span class="on">Identify</span><span>Health check</span></div><span style="width:44px"></span></div>
-      ${busy?"":`<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-      <div class="hint"><b></b>${scan.url?"Photo ready":"Fill the frame with leaves"}</div>`}
+        <div class="seg" role="tablist" aria-label="Scan mode">
+          <button role="tab" data-mode="identify" aria-selected="${!health}" class="${health?"":"on"}" ${busy?"disabled":""}>Identify</button>
+          <button role="tab" data-mode="health" aria-selected="${health}" class="${health?"on":""}" ${busy?"disabled":""}>Health check</button></div>
+        <span style="width:44px"></span></div>
+      ${busy||noCam?"":`<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="hint"><b></b>${health?"Get close to the sick leaves":"Fit the whole plant or a leaf in the frame"}</div>`}
     </div>
     <div class="bar pad">
-      ${busy?`<div class="steps" aria-live="polite">${["Finding leaves","Matching against thousands of species","Writing your care guide"].map((s,i)=>`<div class="step ${i<scan.step?"done":i===scan.step?"now":""}"><span class="dot">${i<scan.step?I.check:""}</span>${s}</div>`).join("")}</div>`
-      :`${scan.error?`<div class="err" role="alert">${esc(scan.error)}</div>`:""}
+      ${busy?`<div class="steps" aria-live="polite">${steps.map((s,i)=>`<div class="step ${i<scan.step?"done":i===scan.step?"now":""}"><span class="dot">${i<scan.step?I.check:""}</span>${s}</div>`).join("")}</div>`
+      :`${scan.error?`<div class="err" role="alert">${esc(scan.error)}${scan.url?' <button class="errbtn" id="go">Try again</button>':""}</div>`:""}
       <div class="ctrls">
-        <label class="side" for="pick" aria-label="Choose from gallery">${I.gallery}<input class="fileinput" id="pick" type="file" accept="image/*"></label>
-        <label class="shutter" for="cam" aria-label="Take photo"><span></span><input class="fileinput" id="cam" type="file" accept="image/*" capture="environment"></label>
-        ${scan.url?`<button class="side" id="go" aria-label="Try identifying again">${I.send}</button>`:'<span style="width:54px"></span>'}
-      </div>
-      <div class="note">Daylight works best. Stand 30–50 cm away.</div>`}
+        <label class="ctl" for="pick"><span class="side">${I.gallery}</span>Upload<input class="fileinput" id="pick" type="file" accept="image/*"></label>
+        ${live?`<button class="ctl" id="shoot" aria-label="${health?"Check health":"Identify plant"}"><span class="shutter ${health?"hc":""}"><span></span></span>${health?"Check health":"Tap to scan"}</button>`
+              :`<label class="ctl" for="cam"><span class="shutter ${health?"hc":""}"><span></span></span>${health?"Check health":"Take photo"}<input class="fileinput" id="cam" type="file" accept="image/*" capture="environment"></label>`}
+        ${live?`<button class="ctl" id="flip"><span class="side">${I.flip}</span>Flip</button>`:'<span class="ctl"><span class="side" style="visibility:hidden"></span></span>'}
+      </div>`}
     </div>
   </div>`}
 
@@ -403,9 +454,38 @@ function vResult(r){
       ${r.tips?.length?`<div class="sec"><h3>Pro tips</h3>${tipList(r.tips)}</div>`:""}
       ${r.problems?.length?`<div class="sec"><h3>Watch out for</h3>${tipList(r.problems,"warn")}</div>`:""}
       ${r.alternatives?.length?`<p class="muted" style="font-size:14px">Could also be ${r.alternatives.map(esc).join(" or ")}.</p>`:""}
-      <div class="sec"><h3>Where does it live?</h3><div class="chips" id="locchips" role="group" aria-label="Location">${LOCS.map((l,i)=>`<button class="chip" data-loc="${l}" aria-pressed="${i===0}">${l}</button>`).join("")}</div></div>
     </div>
     <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="saveplant">Add to my plants</button></div></div>`}
+
+function vHealth(r){
+  const c=r.status==="healthy"?"ok":r.status==="serious"?"bad":"warn";
+  return `<div class="hero"><img alt="${esc(r.name||"Your plant")}" src="${scan.url}">
+      <div class="top pad"><button class="round glass" id="rescan" aria-label="Back to camera">${I.back}</button></div></div>
+    <div class="sheet pad">
+      <div class="title"><div class="eyebrow">Health check${r.name?` · ${esc(r.name)}`:""}</div>
+        <h1 style="margin-top:8px">${esc(r.headline||"Health report")}</h1>${r.scientific?`<div class="sci">${esc(r.scientific)}</div>`:""}</div>
+      <div class="verdict ${c}"><span class="hic">${c==="ok"?I.ok:I.alert}</span><div><b>${c==="ok"?"Looks healthy":c==="bad"?"Needs attention now":"Minor problem"}</b><p>${esc(r.diagnosis||"")}</p></div>
+        ${r.urgency?`<span class="urg">${esc(r.urgency)}</span>`:""}</div>
+      ${r.treatment?.length?`<div class="sec"><h3>${c==="ok"?"Keep it thriving":"Do this now"}</h3>${tipList(r.treatment)}</div>`:""}
+      ${r.causes?.length&&c!=="ok"?`<div class="sec"><h3>Likely causes</h3>${tipList(r.causes,"warn")}</div>`:""}
+      ${r.prevention?.length?`<div class="sec"><h3>Stop it coming back</h3>${tipList(r.prevention)}</div>`:""}
+      <p class="muted" style="font-size:13px">This is guidance from a photo, not a lab test. If the plant keeps declining, ask a local nursery.</p>
+    </div>
+    <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="fullguide">Get care guide</button></div></div>`}
+
+function vSheet(){
+  const rooms=[...new Set([...LOCS,...plants.map(p=>p.loc)])];
+  return `<div class="scrim" id="scrim"></div>
+  <div class="modal pad" role="dialog" aria-modal="true" aria-labelledby="sheettitle"><div class="in">
+    <div class="grab"></div>
+    <h2 id="sheettitle">${sheet.kind==="add"?"Add to my plants":"Edit plant"}</h2>
+    <label class="field"><span>Nickname</span><input id="nick" value="${esc(sheet.name)}" maxlength="40" autocomplete="off"></label>
+    <div class="field"><span>Room</span><div class="chips wrap" id="roomchips" role="group" aria-label="Room">
+      ${rooms.map(l=>`<button class="chip" data-room="${esc(l)}" aria-pressed="${l===sheet.loc}">${esc(l)}</button>`).join("")}
+      <button class="chip dashed" id="newroom">${I.plus} New room</button></div>
+      <input id="roominput" placeholder="e.g. Terrace, Study, Shop" maxlength="24" hidden autocomplete="off"></div>
+    <button class="btn" id="sheetsave">${sheet.kind==="add"?"Save plant":"Save changes"}</button>
+  </div></div>`}
 
 function vDetail(p){
   if(!p)return vHome();
@@ -413,7 +493,7 @@ function vDetail(p){
   return `<div class="hero" style="background:${tint(p.name)}">${p.photo?`<img alt="${esc(p.name)}" src="${p.photo}">`:`<div class="ill">${art(p.name)}</div>`}
       <div class="top pad"><button class="round glass" data-go="home" aria-label="Back">${I.back}</button></div></div>
     <div class="sheet pad">
-      <div class="title"><div class="eyebrow">${esc(p.loc)}${p.example?" · Example":""}</div><h1 style="margin-top:6px">${esc(p.name)}</h1><div class="sci">${esc(p.sci||"")}</div></div>
+      <div class="title"><button class="roompill" id="editplant">${I.pin} ${esc(p.loc)} <span>Edit</span></button><h1 style="margin-top:10px">${esc(p.name)}</h1><div class="sci">${esc(p.sci||"")}</div></div>
       <div class="waterbox">
         <div class="ring"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--water-soft)" stroke-width="9"/><circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--water)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-frac)}"/></svg>
           <div class="c"><div><b>${Math.max(0,d)}</b><br><small>${d===1?"day left":"days left"}</small></div></div></div>
@@ -445,11 +525,12 @@ function vSchedule(){
 /* ---------- render ---------- */
 function render(keepScroll){
   const fullscreen=view==="scan"&&!scan.result;
-  document.getElementById("app").innerHTML=view==="scan"?(scan.result?vResult(scan.result):vScan()):view==="detail"?vDetail(plants.find(p=>p.id===current)):view==="schedule"?vSchedule():vHome();
+  document.getElementById("app").innerHTML=(view==="scan"?(scan.result?(scan.result.kind==="health"?vHealth(scan.result):vResult(scan.result)):vScan()):view==="detail"?vDetail(plants.find(p=>p.id===current)):view==="schedule"?vSchedule():vHome())+(sheet?vSheet():"");
   document.getElementById("tabs").hidden=view==="scan"||view==="detail";
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-current",String(t.dataset.go===view)));
   document.body.style.overflow=fullscreen?"hidden":"";
   bind();if(!keepScroll)window.scrollTo(0,0);
+  syncCamera();
 }
 
 /* ---------- photos ---------- */
@@ -464,37 +545,61 @@ async function takeFile(f){
   if(!f)return;view="scan";const s=await shrink(f);
   if(!s){scan.error="That file isn't a photo we can read. Try a JPEG or PNG.";render();return}
   if(scan.url)URL.revokeObjectURL(scan.url);
-  scan={file:s.blob,thumb:s.thumb,url:URL.createObjectURL(s.blob),busy:false,step:0,result:null,error:null};identify();
+  scan={file:s.blob,thumb:s.thumb,url:URL.createObjectURL(s.blob),busy:false,step:0,result:null,error:null,mode:scan.mode};identify();
+}
+/* live camera (real browsers only; falls back to the phone's camera app) */
+function wantCamera(){return view==="scan"&&!scan.url&&!scan.busy&&!scan.result&&!sheet}
+async function syncCamera(){
+  if(!wantCamera()){stopCamera();return}
+  const v=$("video");
+  if(cam.stream){if(v&&v.srcObject!==cam.stream){v.srcObject=cam.stream;v.play().catch(()=>{})}return}
+  if(cam.state==="starting"||cam.state==="blocked"||cam.state==="none")return;
+  if(!navigator.mediaDevices?.getUserMedia||window.claude){cam.state="fallback";return}
+  cam.state="starting";render(true);
+  try{
+    cam.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:cam.facing},width:{ideal:1920},height:{ideal:1080}},audio:false});
+    if(!wantCamera()){stopCamera();return}
+    cam.state="live";render(true);
+  }catch(e){cam.state=e?.name==="NotAllowedError"?"blocked":e?.name==="NotFoundError"?"none":"fallback";render(true)}
+}
+function stopCamera(){if(cam.stream){cam.stream.getTracks().forEach(t=>t.stop());cam.stream=null}if(cam.state==="live"||cam.state==="starting")cam.state="idle"}
+async function shoot(){
+  const v=$("video");if(!v||!v.videoWidth)return;
+  const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);
+  const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.92));stopCamera();takeFile(blob);
 }
 async function identify(){
   scan.busy=true;scan.step=0;scan.error=null;render();
   const t1=setTimeout(()=>{if(scan.busy){scan.step=1;render(true)}},1600),t2=setTimeout(()=>{if(scan.busy){scan.step=2;render(true)}},4500);
   try{
-    const r=await aiIdentify(scan.file);
+    const mode=scan.mode,r=await aiIdentify(scan.file,mode);
     if(!r||r.is_plant===false)scan.error="No plant found in that photo. Get closer to the leaves and try again.";
-    else{r.confidence=Number(r.confidence)||0;r.water_days=Math.max(1,Math.round(Number(r.water_days)||7));scan.result=r}
+    else if(mode==="health"){r.kind="health";scan.result=r}
+    else{r.kind="id";r.confidence=Number(r.confidence)||0;r.water_days=Math.max(1,Math.round(Number(r.water_days)||7));scan.result=r}
   }catch(e){scan.error=e.message}
   clearTimeout(t1);clearTimeout(t2);scan.busy=false;render();
 }
-const resetScan=()=>{if(scan.url)URL.revokeObjectURL(scan.url);scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null}};
+const resetScan=(keepMode)=>{if(scan.url)URL.revokeObjectURL(scan.url);scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null,mode:keepMode?scan.mode:"identify"}};
 
 /* ---------- events ---------- */
 const $=id=>document.getElementById(id);
 function bind(){
-  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{if(b.dataset.go==="scan")resetScan();view=b.dataset.go;render()});
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{if(b.dataset.go==="scan"){resetScan();if(cam.state==="fallback")cam.state="idle"}view=b.dataset.go;render()});
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{current=b.dataset.open;view="detail";render()});
   document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render(true)});
   document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const p=plants.find(x=>x.id===b.dataset.water);p.last=Date.now();save();render(true);toast(`${p.name} watered`)});
   ["cam","pick"].forEach(id=>{const i=$(id);if(i)i.onchange=()=>takeFile(i.files?.[0])});
   if($("go"))$("go").onclick=identify;
-  if($("closecam"))$("closecam").onclick=()=>{resetScan();view="home";render()};
-  ["rescan","rescan2"].forEach(id=>{if($(id))$(id).onclick=()=>{resetScan();render()}});
+  if($("closecam"))$("closecam").onclick=()=>{resetScan();stopCamera();view="home";render()};
+  ["rescan","rescan2"].forEach(id=>{if($(id))$(id).onclick=()=>{resetScan(true);render()}});
+  document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{scan.mode=b.dataset.mode;scan.error=null;render(true)});
+  if($("shoot"))$("shoot").onclick=shoot;
+  if($("flip"))$("flip").onclick=()=>{cam.facing=cam.facing==="environment"?"user":"environment";stopCamera();cam.state="idle";syncCamera()};
+  if($("fullguide"))$("fullguide").onclick=()=>{scan.mode="identify";scan.result=null;identify()};
+  if($("editplant"))$("editplant").onclick=()=>{const p=plants.find(x=>x.id===current);sheet={kind:"edit",id:p.id,name:p.name,loc:p.loc};render(true)};
+  if(sheet)bindSheet();
   if($("waterall"))$("waterall").onclick=()=>{const t=plants.filter(p=>due(p)<=0);t.forEach(p=>p.last=Date.now());save();render(true);toast(`${t.length} ${t.length===1?"plant":"plants"} watered`)};
-  const chips=$("locchips");if(chips)chips.onclick=e=>{const c=e.target.closest(".chip");if(!c)return;chips.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c)))};
-  if($("saveplant"))$("saveplant").onclick=()=>{const r=scan.result,loc=chips?.querySelector('[aria-pressed="true"]')?.dataset.loc||LOCS[0];
-    const p={id:"p"+Date.now(),name:r.name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),photo:scan.thumb,
-      care:{light:r.light,humidity:r.humidity,temp:r.temperature,soil:r.soil,fertilizer:r.fertilizer,toxic:r.toxicity,difficulty:r.difficulty,tips:r.tips||[]}};
-    plants.unshift(p);save();resetScan();current=p.id;view="detail";render();toast(`${p.name} added`)};
+  if($("saveplant"))$("saveplant").onclick=()=>{sheet={kind:"add",name:scan.result.name,loc:filter!=="All"?filter:LOCS[0]};render(true)};
   const p=plants.find(x=>x.id===current);
   if($("water")&&p)$("water").onclick=()=>{p.last=Date.now();save();render(true);toast(`${p.name} watered`)};
   const step=n=>{p.every=Math.min(60,Math.max(1,p.every+n));save();$("every").textContent=`Every ${p.every} days`};
@@ -503,6 +608,22 @@ function bind(){
   if($("remove")&&p)$("remove").onclick=e=>{const b=e.currentTarget;if(b.dataset.c){plants=plants.filter(x=>x!==p);save();view="home";render();toast("Plant removed")}else{b.dataset.c=1;b.textContent="Tap again to remove"}};
   document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{$("q").value=b.dataset.q;ask(p)});
   if($("askform"))$("askform").onsubmit=e=>{e.preventDefault();ask(p)};
+}
+function bindSheet(){
+  const close=()=>{sheet=null;render(true)};
+  $("scrim").onclick=close;
+  const chips=$("roomchips"),ri=$("roominput");
+  chips.onclick=e=>{const c=e.target.closest("[data-room]");if(!c)return;sheet.loc=c.dataset.room;ri.hidden=true;ri.value="";chips.querySelectorAll("[data-room]").forEach(x=>x.setAttribute("aria-pressed",String(x===c)))};
+  $("newroom").onclick=()=>{ri.hidden=false;ri.focus();chips.querySelectorAll("[data-room]").forEach(x=>x.setAttribute("aria-pressed","false"))};
+  $("sheetsave").onclick=()=>{
+    const name=$("nick").value.trim()||sheet.name, loc=(!ri.hidden&&ri.value.trim())||sheet.loc;
+    if(sheet.kind==="add"){const r=scan.result;
+      const p={id:"p"+Date.now(),name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),photo:scan.thumb,
+        care:{light:r.light,humidity:r.humidity,temp:r.temperature,soil:r.soil,fertilizer:r.fertilizer,toxic:r.toxicity,difficulty:r.difficulty,tips:r.tips||[]}};
+      plants.unshift(p);save();resetScan();sheet=null;current=p.id;view="detail";render();toast(`${name} added to ${loc}`)}
+    else{const p=plants.find(x=>x.id===sheet.id);p.name=name;p.loc=loc;save();sheet=null;render(true);toast("Saved")}
+  };
+  document.onkeydown=e=>{if(e.key==="Escape"&&sheet)close()};
 }
 async function ask(p){
   const q=$("q").value.trim();if(!q)return;const out=$("ans");out.hidden=false;out.textContent="Thinking…";
