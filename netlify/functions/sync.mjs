@@ -13,6 +13,7 @@ function cleanPlant(p) {
       t: Number(e.t) || 0, type: ["water", "rain", "feed", "repot", "note", "photo", "health", "added"].includes(e.type) ? e.type : "note",
       text: clip(e.text, 160), status: ["healthy", "minor", "serious"].includes(e.status) ? e.status : undefined, hasPhoto: !!e.hasPhoto,
     })).filter(e => e.t > 0),
+    summary: p.summary && Number(p.summary.t) ? { t: Number(p.summary.t), text: clip(p.summary.text, 600) } : undefined,
     care: Object.fromEntries(Object.entries(care).slice(0, 12).map(([k, v]) => [clip(k, 20), Array.isArray(v) ? v.slice(0, 6).map(x => clip(x, 200)) : clip(v, 200)])),
   };
 }
