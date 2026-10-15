@@ -107,6 +107,16 @@ p{margin:0}
 .howi .n{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;flex:none}
 .howi b{display:block;font-size:15px}.howi small{color:var(--muted);font-size:13px}
 
+.acct{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.acct.col{flex-direction:column;align-items:stretch;gap:12px}
+.acct .am{flex:1;min-width:0}.acct .am b{display:block}.acct .am small{color:var(--muted);font-size:13px;word-break:break-all}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-size:18px;overflow:hidden;flex:none}
+.avatar img{width:100%;height:100%;object-fit:cover}.avatar.sm{width:44px;height:44px;font-size:16px}
+.gbtn{background:#FFFFFF;color:#1F1F1F;border:1px solid #DADCE0}
+.eform{display:flex;flex-direction:column;gap:10px}
+.eform input{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.linkish{background:none;border:0;color:var(--accent);font-weight:800;padding:6px 0;font-size:inherit}
+.err2{color:var(--bad);font-size:14px;margin:0}.ok2{color:var(--accent);font-size:14px;margin:0}
 .langbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px}
 .whos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .who{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0}
@@ -314,6 +324,8 @@ const I={
   home:sv('<path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8Z"/>',22,1.9),
   farmer:sv('<path d="M3 20h18"/><path d="M7 20c0-5 2-9 5-11M12 9c0-3 2-5 5-5 0 3-2 5-5 5ZM12 13c-3 0-5-2-5-5 3 0 5 2 5 5ZM17 20c0-3-1-6-3-8"/>',22,1.9),
   nursery:sv('<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-4a3 3 0 0 1 6 0v4"/><path d="M12 12c0-1.5 1-2.5 2.5-2.5 0 1.5-1 2.5-2.5 2.5Z"/>',22,1.9),
+  cloud:sv('<path d="M7 18a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.3 1.5A3.8 3.8 0 0 1 17.5 18Z"/><path d="M12 11v5M9.5 13.5 12 11l2.5 2.5"/>',22,1.9),
+  google:'<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>',
   bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
 };
 const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
@@ -343,7 +355,7 @@ let LOCS=V().places;
 function track(event){if(window.claude||location.protocol!=="https:")return;try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},keepalive:true,body:JSON.stringify({event,deviceId:settings.device,profile:settings.profile||"none",lang:settings.lang})}).catch(()=>{})}catch(e){}}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function load(){try{const v=JSON.parse(localStorage.getItem("leafline.plants"));if(Array.isArray(v))return v}catch(e){}return null}
-function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){toast("Phone storage is full. Remove a plant to save more.")}syncRemindersSoon()}
+function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){toast("Phone storage is full. Remove a plant to save more.")}syncRemindersSoon();pushSoon()}
 const now=Date.now();
 let plants=(load()??[]).filter(p=>!p.example);
 let view="home", current=null, filter="All";
@@ -360,8 +372,8 @@ const fmtDay=(d,o)=>new Date(Date.now()+d*DAY).toLocaleDateString(undefined,o);
 let toast=function(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
 
 /* ---------- Hindi ---------- */
-const HI={"plant":"पौधा","plants":"पौधे","crop":"फसल","crops":"फसलें","I am a": "मैं हूँ", "Home gardener": "घर का बागवान", "Farmer": "किसान", "Nursery": "नर्सरी", "Indoor plants, balcony, garden": "घर के पौधे, बालकनी, बगीचा", "Crops, vegetables, orchards": "फसलें, सब्ज़ियाँ, बाग", "Stock, propagation, customers": "स्टॉक, पौध तैयार करना, ग्राहक", "Know every plant you own.": "अपने हर पौधे को जानें।", "Catch crop problems early.": "फसल की बीमारी जल्दी पकड़ें।", "Care cards for every plant you sell.": "हर बिकने वाले पौधे का केयर कार्ड।", "Point your camera at any plant. Get its name, a care plan and a health check in seconds.": "किसी भी पौधे पर कैमरा रखें। सेकंडों में नाम, देखभाल और सेहत जांच पाएं।", "Scan your first plant": "पहला पौधा स्कैन करें", "Snap a photo": "फ़ोटो लें", "Leaves in frame, daylight is best": "पत्ते फ्रेम में, दिन की रोशनी सबसे अच्छी", "Get the care plan": "देखभाल की योजना पाएं", "Water, light, soil, pets and problems": "पानी, रोशनी, मिट्टी, पालतू और समस्याएं", "Never forget watering": "पानी देना कभी न भूलें", "Your plants, with a countdown for each": "हर पौधे के लिए उलटी गिनती", "Good morning": "सुप्रभात", "Good afternoon": "नमस्ते", "Good evening": "शुभ संध्या", "Today": "आज", "Tomorrow": "कल", "This week": "इस हफ़्ते", "Later": "बाद में", "Everyone is happy": "सब पौधे खुश हैं", "Mark all watered": "सबको पानी दिया", "My plants": "मेरे पौधे", "My crops": "मेरी फसलें", "My stock": "मेरा स्टॉक", "All": "सभी", "Get watering reminders": "पानी के रिमाइंडर पाएं", "A notification at 9 AM when something is thirsty": "जब पौधे को पानी चाहिए, सुबह 9 बजे सूचना", "Plants": "पौधे", "Schedule": "शेड्यूल", "Watering": "पानी देना", "Water today": "आज पानी दें", "Nothing to water": "आज पानी नहीं देना", "Add plants and their schedule shows up here.": "पौधे जोड़ें, उनका शेड्यूल यहां दिखेगा।", "Identify": "पहचानें", "Health check": "सेहत जांच", "Upload": "अपलोड", "Tap to scan": "स्कैन करें", "Take photo": "फ़ोटो लें", "Check health": "सेहत जांचें", "Flip": "पलटें", "Fit the whole plant or a leaf in the frame": "पूरा पौधा या एक पत्ता फ्रेम में रखें", "Get close to the sick leaves": "खराब पत्तों के पास लाएं", "Point at any plant": "किसी भी पौधे पर कैमरा रखें", "Show us what's wrong": "दिखाइए क्या गड़बड़ है", "Opening camera…": "कैमरा खुल रहा है…", "Tap Allow if your browser asks.": "पूछे तो Allow दबाएं।", "Camera access is off": "कैमरा की अनुमति बंद है", "No camera found": "कैमरा नहीं मिला", "Upload a photo": "फ़ोटो अपलोड करें", "Upload a photo of your plant instead.": "इसकी जगह पौधे की फ़ोटो अपलोड करें।", "Finding leaves": "पत्ते ढूंढ रहे हैं", "Matching against thousands of species": "हज़ारों प्रजातियों से मिला रहे हैं", "Writing your care guide": "आपकी देखभाल गाइड लिख रहे हैं", "Looking at leaves and stems": "पत्ते और तने देख रहे हैं", "Checking for pests, rot and deficiencies": "कीड़े, सड़न और कमी जांच रहे हैं", "Writing a treatment plan": "इलाज की योजना लिख रहे हैं", "Water": "पानी", "Light": "रोशनी", "Humidity": "नमी", "Temperature": "तापमान", "When to water": "कब पानी दें", "Care guide": "देखभाल गाइड", "Soil": "मिट्टी", "Fertilizer": "खाद", "Pets": "पालतू जानवर", "Difficulty": "कठिनाई", "Pro tips": "ख़ास सुझाव", "Watch out for": "इनसे सावधान", "Scan again": "फिर स्कैन करें", "Save": "सेव करें", "Get care guide": "देखभाल गाइड पाएं", "Looks healthy": "स्वस्थ दिखता है", "Needs attention now": "अभी ध्यान चाहिए", "Minor problem": "छोटी समस्या", "Do this now": "अभी यह करें", "Keep it thriving": "ऐसे ही बढ़ने दें", "Likely causes": "संभावित कारण", "Stop it coming back": "दोबारा होने से रोकें", "This is guidance from a photo, not a lab test. If the plant keeps declining, ask a local nursery.": "यह फ़ोटो पर आधारित सलाह है, लैब टेस्ट नहीं। हालत बिगड़े तो नज़दीकी नर्सरी या कृषि केंद्र से पूछें।", "Needs water now": "अभी पानी चाहिए", "Water now": "अभी पानी दें", "Remind me": "याद दिलाएं", "Reminders on": "रिमाइंडर चालू", "Add to calendar": "कैलेंडर में जोड़ें", "Share": "शेयर", "Watering schedule": "पानी का शेड्यूल", "Next watering": "अगला पानी", "Remove plant": "पौधा हटाएं", "Tap again to remove": "हटाने के लिए फिर दबाएं", "Edit": "बदलें", "Why are leaves turning yellow?": "पत्ते पीले क्यों हो रहे हैं?", "When should I repot?": "गमला कब बदलूं?", "Is it getting enough light?": "क्या इसे पूरी रोशनी मिल रही है?", "Settings": "सेटिंग्स", "Language": "भाषा", "Watering reminders": "पानी के रिमाइंडर", "Daily at 9 AM": "रोज़ सुबह 9 बजे", "On for this phone": "इस फ़ोन पर चालू", "Off": "बंद", "Done": "हो गया", "Nickname": "नाम", "Room": "कमरा", "Field": "खेत", "Section": "सेक्शन", "Save changes": "बदलाव सेव करें", "Living room": "बैठक", "Bedroom": "बेडरूम", "Kitchen": "रसोई", "Balcony": "बालकनी", "Office": "ऑफ़िस", "Greenhouse": "ग्रीनहाउस", "Orchard": "बाग", "Kitchen garden": "किचन गार्डन", "Shade net": "शेड नेट", "Outdoor beds": "बाहर की क्यारियां", "Propagation": "पौध तैयार करना", "Display": "डिस्प्ले", "Field 1": "खेत 1", "Field 2": "खेत 2", "Easy": "आसान", "Moderate": "मध्यम", "Hard": "कठिन", "Act today": "आज ही करें", "No action needed": "कुछ करने की ज़रूरत नहीं", "Thinking…": "सोच रहे हैं…", "Try again": "फिर कोशिश करें", "Ask anything about this plant": "इस पौधे के बारे में कुछ भी पूछें"};
-const HI_RX=[["^1 (plant|crop) is thirsty$","1 $1 को पानी चाहिए"],["^(\\d+) (plants|crops) are thirsty$","$1 $2 को पानी चाहिए"],["^(\\d+) plants are thirsty$", "$1 पौधों को पानी चाहिए"], ["^(.+) is thirsty$", "$1 को पानी चाहिए"], ["^1 plant is thirsty$", "1 पौधे को पानी चाहिए"], ["^Every (\\d+) days$", "हर $1 दिन"], ["^In (\\d+) days$", "$1 दिन में"], ["^(\\d+)% match$", "$1% मिलान"], ["^(\\d+) (plants|plant|crops|crop)$", "$1 $2"], ["^Last watered (.+)$", "आख़िरी बार पानी: $1"], ["^days left$", "दिन बाकी"], ["^day left$", "दिन बाकी"], ["^Next up: (.+)$", "अगला: $1"], ["^Health check · (.+)$", "सेहत जांच · $1"], ["^Ask about your (.+)$", "अपने $1 के बारे में पूछें"], ["^Add to my (plants|crops|stock)$", "सूची में जोड़ें"], ["^Save (plant|crop)$", "सेव करें"], ["^Edit (plant|crop)$", "बदलें"], ["^New (room|field|section)$", "नया जोड़ें"], ["^(.+) · every (\\d+) days$", "$1 · हर $2 दिन"], ["^today$", "आज"], ["^yesterday$", "कल"], ["^(\\d+) days ago$", "$1 दिन पहले"]].map(([a,b])=>[new RegExp(a),b]);
+const HI={"Back up your plants": "अपने पौधों का बैकअप लें", "Sign in to keep them safe and use them on any phone.": "साइन इन करें, पौधे सुरक्षित रहेंगे और किसी भी फ़ोन पर मिलेंगे।", "Continue with Google": "Google से जारी रखें", "Use email instead": "ईमेल से करें", "Log in": "लॉग इन", "Create account": "खाता बनाएं", "I have an account": "मेरा खाता है", "Create an account": "नया खाता बनाएं", "Forgot password?": "पासवर्ड भूल गए?", "Log out": "लॉग आउट", "Sync": "सिंक", "Plants backed up": "पौधों का बैकअप हो गया", "Not synced yet": "अभी सिंक नहीं हुआ", "Syncing…": "सिंक हो रहा है…", "Sign in": "साइन इन", "Already use Leafline?": "पहले से Leafline इस्तेमाल करते हैं?", "Sign in so they're safe if you change phones": "साइन इन करें ताकि फ़ोन बदलने पर भी सुरक्षित रहें", "Please wait…": "रुकिए…","plant":"पौधा","plants":"पौधे","crop":"फसल","crops":"फसलें","I am a": "मैं हूँ", "Home gardener": "घर का बागवान", "Farmer": "किसान", "Nursery": "नर्सरी", "Indoor plants, balcony, garden": "घर के पौधे, बालकनी, बगीचा", "Crops, vegetables, orchards": "फसलें, सब्ज़ियाँ, बाग", "Stock, propagation, customers": "स्टॉक, पौध तैयार करना, ग्राहक", "Know every plant you own.": "अपने हर पौधे को जानें।", "Catch crop problems early.": "फसल की बीमारी जल्दी पकड़ें।", "Care cards for every plant you sell.": "हर बिकने वाले पौधे का केयर कार्ड।", "Point your camera at any plant. Get its name, a care plan and a health check in seconds.": "किसी भी पौधे पर कैमरा रखें। सेकंडों में नाम, देखभाल और सेहत जांच पाएं।", "Scan your first plant": "पहला पौधा स्कैन करें", "Snap a photo": "फ़ोटो लें", "Leaves in frame, daylight is best": "पत्ते फ्रेम में, दिन की रोशनी सबसे अच्छी", "Get the care plan": "देखभाल की योजना पाएं", "Water, light, soil, pets and problems": "पानी, रोशनी, मिट्टी, पालतू और समस्याएं", "Never forget watering": "पानी देना कभी न भूलें", "Your plants, with a countdown for each": "हर पौधे के लिए उलटी गिनती", "Good morning": "सुप्रभात", "Good afternoon": "नमस्ते", "Good evening": "शुभ संध्या", "Today": "आज", "Tomorrow": "कल", "This week": "इस हफ़्ते", "Later": "बाद में", "Everyone is happy": "सब पौधे खुश हैं", "Mark all watered": "सबको पानी दिया", "My plants": "मेरे पौधे", "My crops": "मेरी फसलें", "My stock": "मेरा स्टॉक", "All": "सभी", "Get watering reminders": "पानी के रिमाइंडर पाएं", "A notification at 9 AM when something is thirsty": "जब पौधे को पानी चाहिए, सुबह 9 बजे सूचना", "Plants": "पौधे", "Schedule": "शेड्यूल", "Watering": "पानी देना", "Water today": "आज पानी दें", "Nothing to water": "आज पानी नहीं देना", "Add plants and their schedule shows up here.": "पौधे जोड़ें, उनका शेड्यूल यहां दिखेगा।", "Identify": "पहचानें", "Health check": "सेहत जांच", "Upload": "अपलोड", "Tap to scan": "स्कैन करें", "Take photo": "फ़ोटो लें", "Check health": "सेहत जांचें", "Flip": "पलटें", "Fit the whole plant or a leaf in the frame": "पूरा पौधा या एक पत्ता फ्रेम में रखें", "Get close to the sick leaves": "खराब पत्तों के पास लाएं", "Point at any plant": "किसी भी पौधे पर कैमरा रखें", "Show us what's wrong": "दिखाइए क्या गड़बड़ है", "Opening camera…": "कैमरा खुल रहा है…", "Tap Allow if your browser asks.": "पूछे तो Allow दबाएं।", "Camera access is off": "कैमरा की अनुमति बंद है", "No camera found": "कैमरा नहीं मिला", "Upload a photo": "फ़ोटो अपलोड करें", "Upload a photo of your plant instead.": "इसकी जगह पौधे की फ़ोटो अपलोड करें।", "Finding leaves": "पत्ते ढूंढ रहे हैं", "Matching against thousands of species": "हज़ारों प्रजातियों से मिला रहे हैं", "Writing your care guide": "आपकी देखभाल गाइड लिख रहे हैं", "Looking at leaves and stems": "पत्ते और तने देख रहे हैं", "Checking for pests, rot and deficiencies": "कीड़े, सड़न और कमी जांच रहे हैं", "Writing a treatment plan": "इलाज की योजना लिख रहे हैं", "Water": "पानी", "Light": "रोशनी", "Humidity": "नमी", "Temperature": "तापमान", "When to water": "कब पानी दें", "Care guide": "देखभाल गाइड", "Soil": "मिट्टी", "Fertilizer": "खाद", "Pets": "पालतू जानवर", "Difficulty": "कठिनाई", "Pro tips": "ख़ास सुझाव", "Watch out for": "इनसे सावधान", "Scan again": "फिर स्कैन करें", "Save": "सेव करें", "Get care guide": "देखभाल गाइड पाएं", "Looks healthy": "स्वस्थ दिखता है", "Needs attention now": "अभी ध्यान चाहिए", "Minor problem": "छोटी समस्या", "Do this now": "अभी यह करें", "Keep it thriving": "ऐसे ही बढ़ने दें", "Likely causes": "संभावित कारण", "Stop it coming back": "दोबारा होने से रोकें", "This is guidance from a photo, not a lab test. If the plant keeps declining, ask a local nursery.": "यह फ़ोटो पर आधारित सलाह है, लैब टेस्ट नहीं। हालत बिगड़े तो नज़दीकी नर्सरी या कृषि केंद्र से पूछें।", "Needs water now": "अभी पानी चाहिए", "Water now": "अभी पानी दें", "Remind me": "याद दिलाएं", "Reminders on": "रिमाइंडर चालू", "Add to calendar": "कैलेंडर में जोड़ें", "Share": "शेयर", "Watering schedule": "पानी का शेड्यूल", "Next watering": "अगला पानी", "Remove plant": "पौधा हटाएं", "Tap again to remove": "हटाने के लिए फिर दबाएं", "Edit": "बदलें", "Why are leaves turning yellow?": "पत्ते पीले क्यों हो रहे हैं?", "When should I repot?": "गमला कब बदलूं?", "Is it getting enough light?": "क्या इसे पूरी रोशनी मिल रही है?", "Settings": "सेटिंग्स", "Language": "भाषा", "Watering reminders": "पानी के रिमाइंडर", "Daily at 9 AM": "रोज़ सुबह 9 बजे", "On for this phone": "इस फ़ोन पर चालू", "Off": "बंद", "Done": "हो गया", "Nickname": "नाम", "Room": "कमरा", "Field": "खेत", "Section": "सेक्शन", "Save changes": "बदलाव सेव करें", "Living room": "बैठक", "Bedroom": "बेडरूम", "Kitchen": "रसोई", "Balcony": "बालकनी", "Office": "ऑफ़िस", "Greenhouse": "ग्रीनहाउस", "Orchard": "बाग", "Kitchen garden": "किचन गार्डन", "Shade net": "शेड नेट", "Outdoor beds": "बाहर की क्यारियां", "Propagation": "पौध तैयार करना", "Display": "डिस्प्ले", "Field 1": "खेत 1", "Field 2": "खेत 2", "Easy": "आसान", "Moderate": "मध्यम", "Hard": "कठिन", "Act today": "आज ही करें", "No action needed": "कुछ करने की ज़रूरत नहीं", "Thinking…": "सोच रहे हैं…", "Try again": "फिर कोशिश करें", "Ask anything about this plant": "इस पौधे के बारे में कुछ भी पूछें"};
+const HI_RX=[["^Back up your (plants|crops)$","अपनी $1 का बैकअप लें"],["^1 (plant|crop) is thirsty$","1 $1 को पानी चाहिए"],["^(\\d+) (plants|crops) are thirsty$","$1 $2 को पानी चाहिए"],["^(\\d+) plants are thirsty$", "$1 पौधों को पानी चाहिए"], ["^(.+) is thirsty$", "$1 को पानी चाहिए"], ["^1 plant is thirsty$", "1 पौधे को पानी चाहिए"], ["^Every (\\d+) days$", "हर $1 दिन"], ["^In (\\d+) days$", "$1 दिन में"], ["^(\\d+)% match$", "$1% मिलान"], ["^(\\d+) (plants|plant|crops|crop)$", "$1 $2"], ["^Last watered (.+)$", "आख़िरी बार पानी: $1"], ["^days left$", "दिन बाकी"], ["^day left$", "दिन बाकी"], ["^Next up: (.+)$", "अगला: $1"], ["^Health check · (.+)$", "सेहत जांच · $1"], ["^Ask about your (.+)$", "अपने $1 के बारे में पूछें"], ["^Add to my (plants|crops|stock)$", "सूची में जोड़ें"], ["^Save (plant|crop)$", "सेव करें"], ["^Edit (plant|crop)$", "बदलें"], ["^New (room|field|section)$", "नया जोड़ें"], ["^(.+) · every (\\d+) days$", "$1 · हर $2 दिन"], ["^today$", "आज"], ["^yesterday$", "कल"], ["^(\\d+) days ago$", "$1 दिन पहले"]].map(([a,b])=>[new RegExp(a),b]);
 function tr(t){const k=t.trim();if(!k)return t;let out=HI[k];if(out===undefined){for(const [re,rep] of HI_RX){if(re.test(k)){out=k.replace(re,(...m)=>rep.replace(/\$(\d)/g,(_,i)=>HI[m[i]]??(m[i]&&m[i]!==k?tr(m[i]):m[i])));break}}}return out===undefined?t:t.replace(k,out)}
 function translate(){
   if(settings.lang!=="hi")return;
@@ -430,6 +442,7 @@ function vWelcome(){
       <div class="howi"><span class="n">2</span><div><b>Get the care plan</b><small>Water, light, soil, pets and problems</small></div></div>
       <div class="howi"><span class="n">3</span><div><b>Never forget watering</b><small>Your plants, with a countdown for each</small></div></div>
     </div>
+    ${window.claude||auth.user?"":`<p class="muted" style="text-align:center;font-size:14px">Already use Leafline? <button class="linkish" id="opensettings">Sign in</button></p>`}
   </div>`}
 function vHome(){
   if(!plants.length)return vWelcome();
@@ -439,7 +452,8 @@ function vHome(){
   const d=new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"short"});
   return `<div class="screen pad">
     <div class="between hello"><div><div class="eyebrow">${d}</div><h1>${greet()}</h1></div>
-      <button class="round" id="opensettings" aria-label="Settings">${I.gear}</button></div>
+      <button class="round" id="opensettings" aria-label="Settings">${auth.user?`<span class="avatar sm">${auth.user.pictureUrl?`<img alt="" src="${esc(auth.user.pictureUrl)}">`:esc((auth.user.name||auth.user.email||"U").slice(0,1).toUpperCase())}</span>`:I.gear}</button></div>
+    ${settings.reminders&&!auth.user&&plants.length&&!window.claude&&auth.ready?`<button class="nudge" id="opensettings2"><span class="ni">${I.cloud}</span><span><b>Back up your ${V().items}</b><small>Sign in so they're safe if you change phones</small></span>${I.send}</button>`:""}
     ${!settings.reminders&&plants.length&&!window.claude?`<button class="nudge" id="nudge"><span class="ni">${I.bell}</span><span><b>Get watering reminders</b><small>A notification at 9 AM when something is thirsty</small></span>${I.send}</button>`:""}
     ${plants.length?`<section class="today">
       <div class="between" style="align-items:flex-start"><div><div class="lab">Today</div>
@@ -533,11 +547,31 @@ function vHealth(r){
     </div>
     <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="fullguide">Get care guide</button></div></div>`}
 
+function vAccount(){
+  if(auth.user){const u=auth.user,nm=u.name||u.email||"You";
+    return `<div class="acct"><span class="avatar">${u.pictureUrl?`<img alt="" src="${esc(u.pictureUrl)}">`:esc(nm.slice(0,1).toUpperCase())}</span>
+      <div class="am"><b class="notr">${esc(nm)}</b><small><span class="notr">${esc(u.email||"")}</span><br>${auth.syncing?"Syncing…":auth.error?esc(auth.error):auth.lastSync?"Plants backed up":"Not synced yet"}</small></div>
+      <button class="chip" id="syncnow">Sync</button></div>
+      <button class="linkbtn" id="logout" style="align-self:flex-start;padding:0">Log out</button>`}
+  const f=auth.form||{};
+  return `<div class="acct col"><div><b style="font-size:16px">Back up your plants</b><p class="muted" style="font-size:14px;margin-top:2px">Sign in to keep them safe and use them on any phone.</p></div>
+    ${auth.unavailable?`<p class="err2">Login isn't switched on yet for this site.</p>`:`
+    ${auth.providers?.google!==false?`<button class="btn gbtn" id="google">${I.google} Continue with Google</button>`:""}
+    ${f.open?`<form id="emailform" class="eform">
+      <input id="em" type="email" placeholder="Email" autocomplete="email" required value="${esc(f.email||"")}">
+      <input id="pw" type="password" placeholder="Password (8+ characters)" autocomplete="${f.mode==="signup"?"new-password":"current-password"}" minlength="8" required>
+      ${f.msg?`<p class="${f.ok?"ok2":"err2"}">${esc(f.msg)}</p>`:""}
+      <button class="btn" ${f.busy?"disabled":""}>${f.busy?"Please wait…":f.mode==="signup"?"Create account":"Log in"}</button>
+      <div class="between" style="font-size:13px"><button type="button" class="linkish" id="swapmode">${f.mode==="signup"?"I have an account":"Create an account"}</button>
+        ${f.mode==="signup"?"":`<button type="button" class="linkish" id="forgot">Forgot password?</button>`}</div></form>`
+    :`<button class="btn soft" id="useemail">Use email instead</button>`}`}</div>`}
+
 function vSettings(){
   const ios=/iphone|ipad/i.test(navigator.userAgent), standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
   return `<div class="scrim" id="scrim"></div>
   <div class="modal pad" role="dialog" aria-modal="true" aria-labelledby="settitle"><div class="in">
     <div class="grab"></div><h2 id="settitle">Settings</h2>
+    ${window.claude?"":vAccount()}
     <div class="field"><span>I am a</span><div class="whos">${Object.entries(VOCAB).map(([k,v])=>`<button class="who" data-profile="${k}" aria-pressed="${(settings.profile||"home")===k}"><span class="wi">${I[k]}</span><b>${v.who}</b></button>`).join("")}</div></div>
     <div class="field"><span>Language</span><div class="chips wrap">
       <button class="chip" data-lang="en" aria-pressed="${settings.lang==="en"}">English</button><button class="chip" data-lang="hi" aria-pressed="${settings.lang==="hi"}">हिंदी</button></div></div>
@@ -666,7 +700,7 @@ function bind(){
   document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{if(b.dataset.go==="scan"){resetScan();if(cam.state==="fallback")cam.state="idle"}view=b.dataset.go;render()});
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{current=b.dataset.open;view="detail";render()});
   document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render(true)});
-  document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const p=plants.find(x=>x.id===b.dataset.water);p.last=Date.now();save();render(true);toast(`${p.name} watered`)});
+  document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const p=plants.find(x=>x.id===b.dataset.water);p.last=p.updated=Date.now();save();render(true);toast(`${p.name} watered`)});
   ["cam","pick"].forEach(id=>{const i=$(id);if(i)i.onchange=()=>takeFile(i.files?.[0])});
   if($("go"))$("go").onclick=identify;
   if($("closecam"))$("closecam").onclick=()=>{resetScan();stopCamera();view="home";render()};
@@ -679,20 +713,20 @@ function bind(){
   if(sheet)sheet.kind==="settings"?bindSettings():bindSheet();
   document.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{setProfile(b.dataset.profile)});
   if($("langtoggle"))$("langtoggle").onclick=()=>setLang(settings.lang==="hi"?"en":"hi");
-  if($("opensettings"))$("opensettings").onclick=()=>{sheet={kind:"settings"};render(true)};
+  ["opensettings","opensettings2"].forEach(id=>{if($(id))$(id).onclick=()=>{sheet={kind:"settings"};render(true)}});
   if($("nudge"))$("nudge").onclick=()=>enableReminders();
   if($("remind"))$("remind").onclick=()=>enableReminders();
   if($("ics"))$("ics").onclick=()=>addToCalendar(plants.find(x=>x.id===current));
   if($("sharep"))$("sharep").onclick=()=>{const p=plants.find(x=>x.id===current);shareCard({photo:p.photo,name:p.name,sci:p.sci,water:p.every,light:p.care?.light})};
   if($("sharescan"))$("sharescan").onclick=()=>{const r=scan.result;shareCard({photo:scan.url,name:r.name,sci:r.scientific,water:r.water_days,light:r.light})};
-  if($("waterall"))$("waterall").onclick=()=>{const t=plants.filter(p=>due(p)<=0);t.forEach(p=>p.last=Date.now());save();render(true);toast(`${t.length} ${t.length===1?"plant":"plants"} watered`)};
+  if($("waterall"))$("waterall").onclick=()=>{const t=plants.filter(p=>due(p)<=0);t.forEach(p=>p.last=p.updated=Date.now());save();render(true);toast(`${t.length} ${t.length===1?"plant":"plants"} watered`)};
   if($("saveplant"))$("saveplant").onclick=()=>{sheet={kind:"add",name:scan.result.name,loc:filter!=="All"?filter:LOCS[0]};render(true)};
   const p=plants.find(x=>x.id===current);
-  if($("water")&&p)$("water").onclick=()=>{p.last=Date.now();save();track("water");render(true);toast(`${p.name} watered`)};
-  const step=n=>{p.every=Math.min(60,Math.max(1,p.every+n));save();$("every").textContent=`Every ${p.every} days`};
+  if($("water")&&p)$("water").onclick=()=>{p.last=p.updated=Date.now();save();track("water");render(true);toast(`${p.name} watered`)};
+  const step=n=>{p.every=Math.min(60,Math.max(1,p.every+n));p.updated=Date.now();save();$("every").textContent=`Every ${p.every} days`};
   if($("minus"))$("minus").onclick=()=>step(-1);
   if($("plus"))$("plus").onclick=()=>step(1);
-  if($("remove")&&p)$("remove").onclick=e=>{const b=e.currentTarget;if(b.dataset.c){plants=plants.filter(x=>x!==p);save();view="home";render();toast("Plant removed")}else{b.dataset.c=1;b.textContent="Tap again to remove"}};
+  if($("remove")&&p)$("remove").onclick=e=>{const b=e.currentTarget;if(b.dataset.c){plants=plants.filter(x=>x!==p);tomb[p.id]=Date.now();saveTomb();if(auth.user)authFetch(`/api/photo/${p.id}`,{method:"DELETE"}).catch(()=>{});save();view="home";render();toast("Plant removed")}else{b.dataset.c=1;b.textContent="Tap again to remove"}};
   document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{$("q").value=b.dataset.q;ask(p)});
   if($("askform"))$("askform").onsubmit=e=>{e.preventDefault();ask(p)};
 }
@@ -703,7 +737,81 @@ function bindSettings(){
   $("scrim").onclick=close;$("closesettings").onclick=close;
   document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
   if($("remindtoggle"))$("remindtoggle").onclick=()=>settings.reminders?disableReminders():enableReminders();
+  if($("google"))$("google").onclick=async()=>{const lib=await authLib();track("login");lib?.oauthLogin("google")};
+  if($("useemail"))$("useemail").onclick=()=>{auth.form={open:true,mode:"login"};render(true)};
+  if($("swapmode"))$("swapmode").onclick=()=>{auth.form={...auth.form,mode:auth.form.mode==="signup"?"login":"signup",msg:""};render(true)};
+  if($("forgot"))$("forgot").onclick=async()=>{const em=$("em").value.trim();if(!em){auth.form={...auth.form,msg:"Type your email first.",ok:false};render(true);return}
+    try{await (await authLib()).requestPasswordRecovery(em);auth.form={...auth.form,email:em,msg:"Check your email for a reset link.",ok:true}}catch(e){auth.form={...auth.form,email:em,msg:authMsg(e),ok:false}}render(true)};
+  if($("emailform"))$("emailform").onsubmit=async e=>{e.preventDefault();const em=$("em").value.trim(),pw=$("pw").value,mode=auth.form.mode;
+    auth.form={...auth.form,email:em,busy:true,msg:""};render(true);const lib=await authLib();
+    try{
+      if(mode==="signup"){const u=await lib.signup(em,pw);track("signup");
+        if(u?.confirmedAt||auth.providers?.autoconfirm){await lib.login(em,pw).catch(()=>{});await afterLogin()}
+        else auth.form={open:true,mode:"login",email:em,msg:"Account created. Check your email and tap the link to confirm, then log in here.",ok:true}}
+      else{await lib.login(em,pw);track("login");await afterLogin()}
+    }catch(err){auth.form={...auth.form,msg:authMsg(err),ok:false}}
+    auth.form&&(auth.form.busy=false);render(true)};
+  if($("logout"))$("logout").onclick=async()=>{try{await (await authLib()).logout()}catch(e){}track("logout");auth.user=null;auth.lastSync=0;render(true);toast("Logged out. Your plants stay on this phone.")};
+  if($("syncnow"))$("syncnow").onclick=()=>syncNow();
 }
+
+/* ---------- accounts + cloud sync ---------- */
+let auth={user:null,lib:null,ready:false,syncing:false,lastSync:0,error:"",form:null,providers:null,unavailable:false};
+let tomb={};try{tomb=JSON.parse(localStorage.getItem("leafline.deleted")||"{}")}catch(e){}
+function saveTomb(){setLS("leafline.deleted",JSON.stringify(tomb))}
+async function authLib(){if(auth.lib)return auth.lib;if(window.claude||location.protocol!=="https:")return null;try{auth.lib=await import("/vendor/identity.js")}catch(e){return null}return auth.lib}
+function authMsg(e){const m=String(e?.message||e||"");
+  if(/invalid.*(grant|login|credentials)|no user found|invalid email or password/i.test(m))return"Wrong email or password.";
+  if(/not confirmed|confirm/i.test(m))return"Confirm your email first. Check your inbox.";
+  if(/already registered|already exists/i.test(m))return"That email already has an account. Log in instead.";
+  if(/password/i.test(m)&&/short|length|least/i.test(m))return"Use a password with at least 8 characters.";
+  if(/signup.*disabled/i.test(m))return"New sign-ups are switched off.";
+  return m||"Something went wrong. Try again."}
+async function authFetch(path,opt={}){const lib=await authLib();await lib?.refreshSession().catch(()=>{});return fetch(path,{credentials:"same-origin",...opt})}
+async function initAuth(){
+  const lib=await authLib();if(!lib){auth.ready=true;return}
+  try{auth.providers=await lib.getSettings()}catch(e){auth.unavailable=true}
+  try{const cb=await lib.handleAuthCallback();if(cb){history.replaceState(null,"",location.pathname+location.search);
+    if(cb.type==="confirmation")toast("Email confirmed. You're signed in.");if(cb.type==="oauth")track("login")}}catch(e){toast(authMsg(e))}
+  auth.user=await lib.getUser().catch(()=>null);auth.ready=true;
+  if(auth.user)await syncNow(true);else render(true);
+}
+async function afterLogin(){const lib=await authLib();auth.user=await lib.getUser();auth.form=null;await syncNow();toast("Signed in. Your plants are backed up.")}
+function mergePlants(cloud){
+  const byId=new Map();const cdel={};
+  for(const c of cloud||[]){if(c.deleted){cdel[c.id]=c.updated;continue}byId.set(c.id,{...c,photo:c.hasPhoto?`/api/photo/${c.id}`:null,_cloud:true})}
+  for(const l of plants){const c=byId.get(l.id),lu=l.updated||l.last||0;
+    if(cdel[l.id]&&cdel[l.id]>=lu)continue;
+    if(!c||lu>=(c.updated||0)){byId.set(l.id,{...l,photo:l.photo||c?.photo||null,_cloud:!!c,_cloudPhoto:!!c?.hasPhoto})}
+    else if(l.photo?.startsWith("data:"))c.photo=l.photo,c._cloudPhoto=c.hasPhoto}
+  for(const id of Object.keys(tomb))byId.delete(id);
+  for(const [id,t] of Object.entries(cdel))if(!tomb[id])tomb[id]=t;
+  return [...byId.values()].sort((a,b)=>(b.updated||b.last)-(a.updated||a.last));
+}
+async function syncNow(quiet){
+  if(!auth.user||auth.syncing)return;auth.syncing=true;auth.error="";if(!quiet&&sheet)render(true);
+  try{
+    const r=await authFetch("/api/sync");if(r.status===401){auth.user=null;throw new Error("Please sign in again.")}
+    const doc=await r.json();
+    if(!settings.profile&&doc.profile){settings.profile=doc.profile;setLS("leafline.profile",doc.profile);LOCS=V().places}
+    const hadNone=!plants.length;plants=mergePlants(doc.plants);
+    try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){}
+    for(const p of plants){if(p.photo?.startsWith("data:")&&!p._cloudPhoto){const blob=await (await fetch(p.photo)).blob();
+      const up=await authFetch(`/api/photo/${p.id}`,{method:"PUT",headers:{"Content-Type":"image/jpeg"},body:blob});if(up.ok)p._cloudPhoto=true}}
+    await pushNow();auth.lastSync=Date.now();
+    if(hadNone&&plants.length&&!quiet)toast(`${plants.length} ${plants.length===1?V().item:V().items} restored`);
+  }catch(e){auth.error=e.message||"Sync failed. Try again."}
+  auth.syncing=false;render(true);syncRemindersSoon();
+}
+async function pushNow(){
+  if(!auth.user)return;
+  const list=plants.map(p=>({...p,photo:undefined,hasPhoto:!!p.photo})).concat(Object.entries(tomb).map(([id,t])=>({id,deleted:true,updated:t,name:"",every:1,last:t})));
+  const r=await authFetch("/api/sync",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({plants:list,profile:settings.profile||"home",lang:settings.lang})});
+  if(!r.ok)throw new Error("Couldn't back up. Check your internet.");
+}
+let pushT;function pushSoon(){if(!auth.user||auth.syncing)return;clearTimeout(pushT);pushT=setTimeout(async()=>{
+  try{for(const p of plants){if(p.photo?.startsWith("data:")&&!p._cloudPhoto){const blob=await (await fetch(p.photo)).blob();const up=await authFetch(`/api/photo/${p.id}`,{method:"PUT",headers:{"Content-Type":"image/jpeg"},body:blob});if(up.ok)p._cloudPhoto=true}}
+    await pushNow();auth.lastSync=Date.now();auth.error=""}catch(e){auth.error=e.message}},1500)}
 
 /* ---------- reminders (web push) ---------- */
 function b64ToU8(b){const p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
@@ -773,10 +881,10 @@ function bindSheet(){
   $("sheetsave").onclick=()=>{
     const name=$("nick").value.trim()||sheet.name, loc=(!ri.hidden&&ri.value.trim())||sheet.loc;
     if(sheet.kind==="add"){const r=scan.result;
-      const p={id:"p"+Date.now(),name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),photo:scan.thumb,
+      const p={id:"p"+Date.now(),name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),updated:Date.now(),photo:scan.thumb,
         care:{light:r.light,humidity:r.humidity,temp:r.temperature,soil:r.soil,fertilizer:r.fertilizer,toxic:r.toxicity,difficulty:r.difficulty,tips:r.tips||[]}};
-      plants.unshift(p);save();track("save_plant");resetScan();sheet=null;current=p.id;view="detail";render();toast(`${name} added to ${loc}`)}
-    else{const p=plants.find(x=>x.id===sheet.id);p.name=name;p.loc=loc;save();sheet=null;render(true);toast("Saved")}
+      plants.unshift(p);save();track("save_plant");resetScan();sheet=null;current=p.id;view="detail";render();toast(auth.user||window.claude?`${name} added to ${loc}`:`${name} saved on this phone. Sign in to back it up.`)}
+    else{const p=plants.find(x=>x.id===sheet.id);p.name=name;p.loc=loc;p.updated=Date.now();save();sheet=null;render(true);toast("Saved")}
   };
   document.onkeydown=e=>{if(e.key==="Escape"&&sheet)close()};
 }
@@ -789,7 +897,7 @@ document.addEventListener("paste",e=>{const f=[...(e.clipboardData?.files||[])].
 
 const deep=new URLSearchParams(location.search).get("plant");if(deep&&plants.some(p=>p.id===deep)){current=deep;view="detail";history.replaceState(null,"","/")}
 document.documentElement.lang=settings.lang;
-render();track("open");
+render();track("open");initAuth();
 if("serviceWorker" in navigator && !window.claude && location.protocol==="https:") navigator.serviceWorker.register("/sw.js").catch(()=>{});
 </script>
 </body>

@@ -4,9 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Snap a plant, learn how to keep it alive.",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@netlify/blobs": "11.1.4",
+    "@netlify/identity": "2.0.0",
     "web-push": "3.6.7"
   }
 }

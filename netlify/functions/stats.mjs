@@ -1,7 +1,7 @@
 // Private stats page: /stats?key=YOUR_STATS_KEY
 import { getStore } from "@netlify/blobs";
 
-const LABEL = { open: "App opens", scan_identify: "Plant IDs", scan_health: "Health checks", scan_fail: "Failed scans", save_plant: "Plants saved", water: "Waterings logged", ask: "Questions asked", share: "Shares", reminders_on: "Reminders turned on", reminders_off: "Reminders turned off", calendar: "Calendar adds", profile: "Profile picked", lang: "Language switched" };
+const LABEL = { open: "App opens", scan_identify: "Plant IDs", scan_health: "Health checks", scan_fail: "Failed scans", save_plant: "Plants saved", water: "Waterings logged", ask: "Questions asked", share: "Shares", reminders_on: "Reminders turned on", reminders_off: "Reminders turned off", calendar: "Calendar adds", profile: "Profile picked", lang: "Language switched", signup: "Sign-ups", login: "Logins", logout: "Logouts" };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 export default async (req) => {
@@ -22,6 +22,8 @@ export default async (req) => {
       if (!devDay[dev]) { devDay[dev] = true; profiles[prof] = (profiles[prof] || 0) + 1; langs[lang] = (langs[lang] || 0) + 1; if (city && city !== "na") cities[city] = (cities[city] || 0) + 1; }
     }
   }
+  let accounts = 0;
+  try { const { blobs: ub } = await getStore("users").list({ prefix: "u/" }); accounts = ub.length; } catch {}
   const max = Math.max(1, ...days.map(d => perDay[d].users.size));
   const today = days[days.length - 1], week = days.slice(-7);
   const weekUsers = new Set(); week.forEach(d => perDay[d].users.forEach(u => weekUsers.add(u)));
@@ -36,7 +38,7 @@ h1{font-size:28px;margin:0 0 4px}p.s{color:#55655B;margin:0 0 20px}.kpis{display
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}</style></head><body><main>
 <h1>Leafline stats</h1><p class="s">Last 30 days · anonymous devices · India time</p>
 <div class="kpis"><div class="k"><small>Users today</small><b>${perDay[today].users.size}</b></div><div class="k"><small>Users this week</small><b>${weekUsers.size}</b></div>
-<div class="k"><small>Users (30 days)</small><b>${devices.size}</b></div><div class="k"><small>Scans (30 days)</small><b>${(totals.scan_identify || 0) + (totals.scan_health || 0)}</b></div></div>
+<div class="k"><small>Users (30 days)</small><b>${devices.size}</b></div><div class="k"><small>Accounts (all time)</small><b>${accounts}</b></div><div class="k"><small>Scans (30 days)</small><b>${(totals.scan_identify || 0) + (totals.scan_health || 0)}</b></div></div>
 <div class="card"><h2>Daily users</h2><div class="bars">${days.map(d => `<i title="${d}: ${perDay[d].users.size} users, ${perDay[d].scans} scans" style="height:${Math.round(perDay[d].users.size / max * 100)}%"></i>`).join("")}</div><div class="ax"><span>${days[0]}</span><span>${today}</span></div></div>
 <div class="grid"><div class="card"><h2>What people do</h2><ul>${Object.keys(LABEL).filter(k => totals[k]).map(k => `<li><span>${LABEL[k]}</span><b>${totals[k]}</b></li>`).join("") || "<li><span>No data yet</span></li>"}</ul></div>
 <div class="card"><h2>Who they are</h2><ul>${top(profiles)}</ul><h2 style="margin-top:16px">Language</h2><ul>${top(langs)}</ul></div>
