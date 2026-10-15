@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Leafline</title>
+<meta name="description" content="Snap a plant, learn how to keep it alive.">
+<meta name="theme-color" content="#1E6B4C">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: phone-first single column (max 480px); immersive full-bleed screens for scan + result; bottom tab bar on list screens */
+:root{
+  --bg:#EEF2EC; --surface:#FFFFFF; --sunk:#E3E9E2; --ink:#13201A; --muted:#55655B; --line:#DCE3DC;
+  --accent:#1E6B4C; --accent-ink:#FFFFFF; --accent-soft:#D6E8DD;
+  --sun:#F4C95D; --sun-soft:#FBEFD2; --sun-deep:#8A6100; --night:#13201A; --night-ink:#EEF2EC; --night-muted:#A9B8AE;
+  --bad:#A63A28; --bad-soft:#F7DDD7; --water:#3A7CA5; --water-soft:#DCEAF2;
+  --display:"Bricolage Grotesque", "Avenir Next", Georgia, serif;
+  --body:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow:0 1px 2px rgba(19,32,26,.06), 0 8px 24px rgba(19,32,26,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1411; --surface:#17201B; --sunk:#1F2A24; --ink:#E6EEE8; --muted:#98A89E; --line:#27332C;
+  --accent:#5CC08F; --accent-ink:#08140E; --accent-soft:#1D3A2C;
+  --sun:#F4C95D; --sun-soft:#3A2F12; --sun-deep:#F4C95D; --night:#1F2A24; --night-ink:#E6EEE8; --night-muted:#A9B8AE;
+  --bad:#F09A88; --bad-soft:#3A1E19; --water:#7FB8DB; --water-soft:#1B2E3A;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1411; --surface:#17201B; --sunk:#1F2A24; --ink:#E6EEE8; --muted:#98A89E; --line:#27332C;
+  --accent:#5CC08F; --accent-ink:#08140E; --accent-soft:#1D3A2C;
+  --sun:#F4C95D; --sun-soft:#3A2F12; --sun-deep:#F4C95D; --night:#1F2A24; --night-ink:#E6EEE8; --night-muted:#A9B8AE;
+  --bad:#F09A88; --bad-soft:#3A1E19; --water:#7FB8DB; --water-soft:#1B2E3A;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance;line-height:1.08}
+p{margin:0}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;position:relative}
+.pad{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.screen{display:flex;flex-direction:column;gap:22px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:15px;width:100%;transition:transform .15s ease}
+.btn:active{transform:scale(.98)}
+.btn.soft{background:var(--sunk);color:var(--ink)}
+.btn.light{background:var(--night-ink);color:var(--night)}
+.round{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--surface);box-shadow:var(--shadow);flex:none;color:var(--ink)}
+.round.glass{background:rgba(14,20,17,.55);color:#fff;box-shadow:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+/* home */
+.hello h1{font-size:34px;font-weight:800}
+.today{background:var(--night);color:var(--night-ink);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:18px}
+.today .lab{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--sun)}
+.today h2{font-size:26px;font-weight:800;margin-top:4px}
+.today .sub{color:var(--night-muted);font-size:14px;margin-top:4px}
+.today .drop{width:56px;height:56px;border-radius:50%;background:var(--sun);color:#13201A;display:grid;place-items:center;flex:none}
+.faces{display:flex}
+.faces span{width:36px;height:36px;border-radius:50%;border:2px solid var(--night);margin-left:-8px;overflow:hidden;display:grid;place-items:end center}
+.faces span:first-child{margin-left:0}
+.faces img{width:100%;height:100%;object-fit:cover}
+.faces svg{width:90%;height:auto}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:38px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:700;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:0;border-radius:22px;padding:8px;text-align:left;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);width:100%;color:var(--ink)}
+.card .pic{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;display:grid;place-items:end center}
+.card .pic img{width:100%;height:100%;object-fit:cover}
+.card .pic svg{width:72%;height:auto}
+.badge{position:absolute;top:8px;left:8px;font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;background:#FFFFFF;color:#13201A}
+.badge.due{background:var(--sun);color:#3a2c00}
+.card .nm{font-weight:800;font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .lc{font-size:12px;color:var(--muted)}
+.meter{height:5px;border-radius:5px;background:var(--water-soft);overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;background:var(--water);border-radius:5px}
+.card .info{padding:0 6px 6px}
+.empty{background:var(--surface);border-radius:24px;padding:32px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow)}
+.ex{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+
+/* scan */
+.cam{position:fixed;inset:0;background:#0B110E;color:#fff;display:flex;flex-direction:column;z-index:5}
+.cam .view{position:relative;flex:1;overflow:hidden;display:grid;place-items:center}
+.cam .view>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam .bg-leaf{position:absolute;inset:0;display:grid;place-items:center}
+.cam .top{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:0;right:0;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.seg{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(14,20,17,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.seg span{height:34px;padding:0 14px;border-radius:999px;display:grid;place-items:center;font-size:13px;font-weight:700}
+.seg span.on{background:#fff;color:#13201A}
+.frame{position:relative;width:min(72vw,300px);aspect-ratio:5/6;z-index:1}
+.frame i{position:absolute;width:46px;height:46px;border:4px solid #F4C95D}
+.frame i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-top-left-radius:24px}
+.frame i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-top-right-radius:24px}
+.frame i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0;border-bottom-left-radius:24px}
+.frame i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-bottom-right-radius:24px}
+.hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(14,20,17,.7);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:2}
+.hint b{width:8px;height:8px;border-radius:50%;background:#7FD4A4}
+.cam .bar{padding-top:22px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;background:#0B110E}
+.ctrls{width:100%;max-width:340px;display:flex;align-items:center;justify-content:space-between}
+.shutter{width:84px;height:84px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center;cursor:pointer;position:relative}
+.shutter span{width:64px;height:64px;border-radius:50%;background:#fff;transition:transform .15s}
+.shutter:active span{transform:scale(.9)}
+.side{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#1F2A24;cursor:pointer;color:#fff;position:relative;border:0}
+.fileinput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.cam .note{font-size:13px;color:#A9B8AE;text-align:center}
+.cam .err{width:100%;max-width:440px;background:#3A1E19;color:#F7C8BE;border-radius:14px;padding:12px 14px;font-size:14px}
+
+/* analyzing */
+.scanline{position:absolute;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(127,212,164,0) 0%,rgba(127,212,164,.35) 85%,rgba(127,212,164,.9) 100%);animation:sweep 2.2s ease-in-out infinite;z-index:1}
+@keyframes sweep{0%{top:-120px}100%{top:100%}}
+.steps{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;padding:6px 0 10px}
+.step{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:700;color:#6B7C71}
+.step .dot{width:24px;height:24px;border-radius:50%;border:2px solid #2E3B33;display:grid;place-items:center;flex:none}
+.step.done{color:#E6EEE8}.step.done .dot{background:#5CC08F;border-color:#5CC08F;color:#08140E}
+.step.now{color:#fff}.step.now .dot{border-color:#5CC08F;border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.scanline,.step.now .dot{animation:none}}
+
+/* result + detail */
+.hero{position:relative;height:380px;margin:0 auto;max-width:480px;overflow:hidden;background:var(--sunk)}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero .ill{width:100%;height:100%;display:grid;place-items:end center}
+.hero .ill svg{width:62%;height:auto}
+.hero .top{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:0;right:0;display:flex;justify-content:space-between}
+.sheet{position:relative;margin-top:-36px;background:var(--bg);border-radius:30px 30px 0 0;padding-top:26px;display:flex;flex-direction:column;gap:22px;padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))}
+.title h1{font-size:36px;font-weight:800}
+.sci{font-style:italic;color:var(--muted);margin-top:4px}
+.match{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.match.low{background:var(--bad-soft);color:var(--bad)}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:var(--surface);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);min-width:0}
+.tile .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center}
+.tile .k{font-size:12px;font-weight:700;color:var(--muted)}
+.tile .v{font-weight:800;font-size:15px;line-height:1.25}
+.health{border-radius:20px;padding:16px;display:flex;gap:12px;align-items:flex-start}
+.health.ok{background:var(--accent-soft)}.health.ok .hic{color:var(--accent)}
+.health.warn{background:var(--sun-soft)}.health.warn .hic{color:var(--sun-deep)}
+.health.bad{background:var(--bad-soft)}.health.bad .hic{color:var(--bad)}
+.health b{display:block;font-size:15px}
+.health p{font-size:14px;margin-top:2px}
+.sec{display:flex;flex-direction:column;gap:12px}
+.sec h3{font-size:20px;font-weight:800}
+.rows{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.rowi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.rowi:last-child{border-bottom:0}
+.rowi .ic{width:32px;height:32px;border-radius:10px;background:var(--sunk);display:grid;place-items:center;flex:none;color:var(--muted)}
+.rowi .k{font-size:14px;color:var(--muted);flex:1}
+.rowi .v{font-size:14px;font-weight:700;text-align:right;max-width:58%}
+.tips{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.tips li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.tips li span{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.tips.warn li span{background:var(--bad-soft);color:var(--bad)}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--bg);border-top:1px solid var(--line);padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+.dock .in{max-width:480px;margin:0 auto;display:flex;gap:10px}
+.dock .btn.soft{width:auto;flex:none}
+
+/* detail */
+.waterbox{background:var(--surface);border-radius:24px;padding:18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:18px}
+.ring{position:relative;width:96px;height:96px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1.05}
+.ring .c b{font-family:var(--display);font-size:28px;font-weight:800}
+.ring .c small{font-size:11px;color:var(--muted);font-weight:700}
+.stepper{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:999px;padding:6px;box-shadow:var(--shadow)}
+.stepper button{width:44px;height:44px;border-radius:50%;border:0;background:var(--sunk);font-size:20px;font-weight:700}
+.stepper output{font-weight:800;font-variant-numeric:tabular-nums}
+.ask{display:flex;gap:8px;background:var(--surface);border-radius:999px;padding:6px;box-shadow:var(--shadow);margin:0}
+.ask input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:0 12px;outline:none}
+.ask button{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.bubble{background:var(--accent-soft);border-radius:20px 20px 20px 6px;padding:14px 16px;font-size:15px;white-space:pre-wrap}
+.suggest{display:flex;flex-wrap:wrap;gap:8px}
+.suggest button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.linkbtn{background:none;border:0;color:var(--bad);font-weight:700;padding:12px;align-self:center}
+
+/* schedule */
+.day{display:flex;flex-direction:column;gap:10px}
+.task{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow)}
+.task .th{width:46px;height:46px;border-radius:12px;overflow:hidden;display:grid;place-items:end center;flex:none;border:0;padding:0}
+.task .th img{width:100%;height:100%;object-fit:cover}
+.task .th svg{width:80%;height:auto}
+.task .m{flex:1;min-width:0}
+.task .m b{display:block;font-size:15px}
+.task .m small{color:var(--muted);font-size:13px}
+.check{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:transparent;display:grid;place-items:center;color:var(--accent);flex:none}
+
+/* nav */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--line);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.tabs .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center}
+.tab{border:0;background:none;color:var(--muted);font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;min-height:44px}
+.tab[aria-current="true"]{color:var(--accent)}
+.fab{justify-self:center;width:66px;height:66px;border-radius:50%;border:5px solid var(--bg);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;margin-top:-40px;box-shadow:0 10px 24px rgba(30,107,76,.35)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(104px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:9;box-shadow:var(--shadow);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<nav class="tabs pad" id="tabs" aria-label="Main">
+  <div class="in">
+    <button class="tab" data-go="home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/></svg>Plants</button>
+    <button class="fab" data-go="scan" aria-label="Scan a plant"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/></svg></button>
+    <button class="tab" data-go="schedule"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Schedule</button>
+  </div>
+</nav>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ---------- icons + illustrations ---------- */
+const sv=(d,w=20,sw=2)=>`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const I={
+  back:sv('<path d="M15 5l-7 7 7 7"/>',20,2.2), close:sv('<path d="M6 6l12 12M18 6 6 18"/>',20,2.2),
+  drop:sv('<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/>',22),
+  sun:sv('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+  hum:sv('<path d="M7 4s3 3.3 3 5.5a3 3 0 0 1-6 0C4 7.3 7 4 7 4ZM16 9s4 4.4 4 7.3a4 4 0 0 1-8 0C12 13.4 16 9 16 9Z"/>'),
+  temp:sv('<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0Z"/>'),
+  soil:sv('<path d="M5 10h14l-2 10H7L5 10Z"/><path d="M12 10V4M9 6l3-2 3 2"/>',18),
+  feed:sv('<path d="M7 3h10l-1 5H8L7 3Z"/><path d="M8 8l-2 13h12L16 8"/>',18),
+  paw:sv('<circle cx="7" cy="9" r="1.8"/><circle cx="17" cy="9" r="1.8"/><circle cx="10" cy="5" r="1.8"/><circle cx="14" cy="5" r="1.8"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 2-4 2s-4 0-4-2Z"/>',18),
+  level:sv('<path d="M6 20V14M12 20V9M18 20V4"/>',18),
+  calendar:sv('<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',18),
+  check:sv('<path d="M5 12l5 5L19 7"/>',16,3),
+  ok:sv('<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',22,2.2),
+  alert:sv('<path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17v.5"/>',22,2.2),
+  send:sv('<path d="M5 12h14M13 6l6 6-6 6"/>',20,2.2),
+  gallery:sv('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',24,1.8),
+  bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
+};
+const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
+const ART=[
+ '<path d="M32 44V22"/><path d="M32 32c-11 0-17-7-17-17 10 0 17 6 17 17Z" fill="#7FB89A"/><path d="M32 27c9 0 15-6 15-14-9 0-15 5-15 14Z" fill="#9CCBAF"/><path d="M32 40c-7 0-11-3-12-9 7 0 11 4 12 9Z" fill="#5FA27F"/>',
+ '<path d="M32 44c-2-10-8-14-14-14 1 7 6 12 14 14Z" fill="#B8CF6E"/><path d="M32 44c2-12 8-17 16-18-1 9-7 15-16 18Z" fill="#9EBE55"/><path d="M32 44c0-12 0-20 0-26 4 6 5 16 0 26Z" fill="#C9DB86"/>',
+ '<path d="M28 44c-3-10-2-22 1-30 3 8 3 20-1 30Z" fill="#6E9C82"/><path d="M33 44c-1-9 1-18 5-25 2 9 0 18-5 25Z" fill="#8DB59D"/><path d="M36 44c2-6 5-10 9-12-1 6-4 10-9 12Z" fill="#5C8A70"/>',
+ '<path d="M32 44V16"/><path d="M32 22c-6 0-9-3-9-8 5 0 9 3 9 8Z" fill="#7FB89A"/><path d="M32 30c7 0 10-4 10-9-6 0-10 3-10 9Z" fill="#5FA27F"/><path d="M32 38c-7 0-10-4-10-9 6 0 10 3 10 9Z" fill="#9CCBAF"/>'
+];
+function hash(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
+function art(seed){const n=hash(seed);return `<svg viewBox="0 0 64 60" fill="none" stroke="#13201A" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">${ART[n%ART.length]}<path d="M20 44h24l-3 14H23Z" fill="${n%2?"#E7D3B5":"#D9B48C"}"/></svg>`}
+const tint=seed=>TINTS[hash(seed)%TINTS.length];
+const pic=p=>p.photo?`<img alt="" src="${p.photo}">`:art(p.name);
+
+/* ---------- data (saved in this browser) ---------- */
+const DAY=86400000, LOCS=["Living room","Bedroom","Kitchen","Balcony","Office"];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function load(){try{const v=JSON.parse(localStorage.getItem("leafline.plants"));if(Array.isArray(v))return v}catch(e){}return null}
+function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){}}
+const now=Date.now();
+let plants=load()??[
+ {id:"ex1",example:true,name:"Monstera",sci:"Monstera deliciosa",loc:"Living room",every:7,last:now-7*DAY,care:{light:"Bright, indirect",humidity:"Medium–high",temp:"18–29 °C",soil:"Chunky aroid mix",fertilizer:"Monthly in spring–summer",toxic:"Toxic to cats and dogs",difficulty:"Easy",tips:["Wipe leaves monthly so they can breathe","Add a moss pole once it starts climbing","Rotate a quarter turn each week for even growth"]}},
+ {id:"ex2",example:true,name:"Golden pothos",sci:"Epipremnum aureum",loc:"Kitchen",every:7,last:now-8*DAY,care:{light:"Low to bright, indirect",humidity:"Medium",temp:"15–30 °C",soil:"Standard potting mix",fertilizer:"Every 6–8 weeks",toxic:"Toxic to cats and dogs",difficulty:"Easy",tips:["Let the top 3 cm dry out between waterings","Pinch long vines to keep it bushy"]}},
+ {id:"ex3",example:true,name:"Snake plant",sci:"Dracaena trifasciata",loc:"Bedroom",every:14,last:now-10*DAY,care:{light:"Low to bright",humidity:"Low",temp:"15–30 °C",soil:"Cactus mix",fertilizer:"2–3 times a year",toxic:"Mildly toxic to pets",difficulty:"Easy",tips:["Overwatering is the main killer","Water half as often in winter"]}},
+ {id:"ex4",example:true,name:"Fiddle leaf fig",sci:"Ficus lyrata",loc:"Balcony",every:9,last:now-8*DAY,care:{light:"Bright, some direct",humidity:"Medium",temp:"16–27 °C",soil:"Well-draining mix",fertilizer:"Monthly in growing season",toxic:"Toxic to pets",difficulty:"Moderate",tips:["Hates being moved; pick a spot and keep it","Brown spots usually mean overwatering"]}}
+];
+let view="home", current=null, filter="All";
+let scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null};
+
+const due=p=>Math.round((p.last+p.every*DAY-Date.now())/DAY);
+const dueTxt=d=>d<=0?"Water today":d===1?"Tomorrow":`In ${d} days`;
+const left=p=>Math.max(0,Math.min(1,1-(Date.now()-p.last)/(p.every*DAY)));
+const ago=t=>{const d=Math.floor((Date.now()-t)/DAY);return d<=0?"Today":d===1?"Yesterday":`${d} days ago`};
+const greet=()=>{const h=new Date().getHours();return h<12?"Good morning":h<17?"Good afternoon":"Good evening"};
+const fmtDay=(d,o)=>new Date(Date.now()+d*DAY).toLocaleDateString(undefined,o);
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
+
+/* ---------- AI: Claude when opened inside Claude, otherwise this app's own server (/api) ---------- */
+const PROMPT=`You are a plant identification and care expert. Identify the plant in the photo and assess its visible health.
+Reply with ONLY a JSON object of this exact shape:
+{"is_plant":true,"name":"common name","scientific":"Genus species","family":"Family","confidence":0-100,
+"summary":"one or two plain sentences about the plant",
+"water_days":integer days between waterings for a typical indoor pot,
+"watering_tip":"how to tell when to water, one sentence",
+"light":"2-3 words","humidity":"1-2 words","temperature":"range in °C","soil":"short","fertilizer":"short","toxicity":"pet safety, short","difficulty":"Easy|Moderate|Hard",
+"health":{"status":"healthy|minor|serious","headline":"short verdict","detail":"what you see and what to do, 1-2 sentences"},
+"tips":["3-4 short practical tips"],"problems":["2-3 common problems for this plant"],"alternatives":["up to 2 other species it might be"]}
+If the photo has no plant, return {"is_plant":false}. Keep every string short.`;
+const CLAUDE_ERR={not_granted:"Access was declined. Reload the page and tap Allow.",rate_limited:"Too many scans at once. Wait a minute and try again.",image_rejected:"That photo couldn't be read. Try another one.",images_unavailable:"This view can't send photos. Open the link in Chrome.",invalid_json:"The answer came back garbled. Try again.",refused:"This photo couldn't be analysed. Try a different one."};
+let claudeAI=null;
+if(window.claude?.use) window.claude.use("sample").then(f=>{claudeAI=f}).catch(()=>{});
+const toB64=b=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(",")[1]);r.onerror=no;r.readAsDataURL(b)});
+async function api(path,body){
+  let r;try{r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})}catch(e){throw new Error("No internet connection. Check it and try again.")}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Something went wrong. Try again.");return j;
+}
+async function aiIdentify(blob){
+  if(claudeAI){try{return await claudeAI.json(PROMPT,{images:blob})}catch(e){throw new Error(CLAUDE_ERR[e?.code]||"Couldn't reach the plant expert. Try again.")}}
+  return api("/api/identify",{image:await toB64(blob),mime:"image/jpeg"});
+}
+async function aiAsk(ctx,q,onText){
+  if(claudeAI){try{const {text}=await claudeAI(`You are a friendly plant-care expert. ${ctx}\n\nAnswer the owner's question in 3-5 short sentences, practical and specific. Plain text, no markdown.\n\nQuestion: ${q}`,{onText:({text})=>onText(text),cache:false});return text}catch(e){throw new Error(e?.text||CLAUDE_ERR[e?.code]||"Couldn't get an answer. Try again.")}}
+  const j=await api("/api/ask",{context:ctx,question:q});onText(j.answer);return j.answer;
+}
+
+/* ---------- screens ---------- */
+function vHome(){
+  const sorted=[...plants].sort((a,b)=>due(a)-due(b)), thirsty=sorted.filter(p=>due(p)<=0);
+  const locs=["All",...new Set(plants.map(p=>p.loc))];
+  const list=sorted.filter(p=>filter==="All"||p.loc===filter);
+  const d=new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"short"});
+  return `<div class="screen pad">
+    <div class="between hello"><div><div class="eyebrow">${d}</div><h1>${greet()}</h1></div>
+      <button class="round" data-go="schedule" aria-label="Watering schedule">${I.bell}</button></div>
+    ${plants.length?`<section class="today">
+      <div class="between" style="align-items:flex-start"><div><div class="lab">Today</div>
+        <h2>${thirsty.length?`${thirsty.length} ${thirsty.length===1?"plant is":"plants are"} thirsty`:"Everyone is happy"}</h2>
+        <div class="sub">${thirsty.length?esc(thirsty.map(p=>p.name).join(", ")):`Next up: ${esc(sorted[0].name)}, ${dueTxt(due(sorted[0])).toLowerCase()}`}</div></div>
+        <div class="drop">${I.drop}</div></div>
+      ${thirsty.length?`<div class="between"><div class="faces">${thirsty.slice(0,4).map(p=>`<span style="background:${tint(p.name)}">${pic(p)}</span>`).join("")}</div>
+        <button class="btn light" id="waterall" style="width:auto;min-height:46px">Mark all watered</button></div>`:""}
+    </section>`:""}
+    <div class="between"><h2 style="font-size:24px;font-weight:800">My plants</h2><span class="muted" style="font-weight:700;font-size:14px">${plants.length} ${plants.length===1?"plant":"plants"}</span></div>
+    ${plants.length>1?`<div class="chips" role="group" aria-label="Filter by room">${locs.map(l=>`<button class="chip" data-filter="${esc(l)}" aria-pressed="${l===filter}">${esc(l)}</button>`).join("")}</div>`:""}
+    ${list.length?`<div class="grid">${list.map(p=>{const dd=due(p);return `<button class="card" data-open="${p.id}">
+        <div class="pic" style="background:${tint(p.name)}">${pic(p)}<span class="badge ${dd<=0?"due":""}">${dueTxt(dd)}</span></div>
+        <div class="info"><div class="nm">${esc(p.name)}</div><div class="lc">${esc(p.loc)}${p.example?'<span class="ex">Example</span>':""}</div>
+        <div class="meter" role="img" aria-label="Water left ${Math.round(left(p)*100)}%"><i style="width:${Math.round(left(p)*100)}%"></i></div></div></button>`}).join("")}</div>`
+    :`<div class="empty"><div style="width:120px">${art("start")}</div><h3>Start your collection</h3><p class="muted">Scan any plant to learn its name and how to care for it.</p><button class="btn" data-go="scan" style="margin-top:8px">Scan a plant</button></div>`}
+  </div>`}
+
+function vScan(){
+  const busy=scan.busy;
+  return `<div class="cam">
+    <div class="view">
+      ${scan.url?`<img alt="Your photo" src="${scan.url}">`:`<div class="bg-leaf"><svg width="380" height="420" viewBox="0 0 64 70" fill="none" stroke="#0B110E" stroke-width=".5" stroke-linejoin="round" aria-hidden="true"><path d="M32 70V30"/><path d="M32 44c-16 0-26-10-26-26 15 0 26 9 26 26Z" fill="#2F6347"/><path d="M32 38c13 0 22-8 22-22-13 0-22 7-22 22Z" fill="#3E7A58"/><path d="M32 58c-10 0-17-5-18-14 10 0 17 5 18 14Z" fill="#254F39"/></svg></div>`}
+      ${busy?'<div class="scanline"></div>':""}
+      <div class="top pad"><button class="round glass" id="closecam" aria-label="Close">${I.close}</button>
+        <div class="seg"><span class="on">Identify</span><span>Health check</span></div><span style="width:44px"></span></div>
+      ${busy?"":`<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="hint"><b></b>${scan.url?"Photo ready":"Fill the frame with leaves"}</div>`}
+    </div>
+    <div class="bar pad">
+      ${busy?`<div class="steps" aria-live="polite">${["Finding leaves","Matching against thousands of species","Writing your care guide"].map((s,i)=>`<div class="step ${i<scan.step?"done":i===scan.step?"now":""}"><span class="dot">${i<scan.step?I.check:""}</span>${s}</div>`).join("")}</div>`
+      :`${scan.error?`<div class="err" role="alert">${esc(scan.error)}</div>`:""}
+      <div class="ctrls">
+        <label class="side" for="pick" aria-label="Choose from gallery">${I.gallery}<input class="fileinput" id="pick" type="file" accept="image/*"></label>
+        <label class="shutter" for="cam" aria-label="Take photo"><span></span><input class="fileinput" id="cam" type="file" accept="image/*" capture="environment"></label>
+        ${scan.url?`<button class="side" id="go" aria-label="Try identifying again">${I.send}</button>`:'<span style="width:54px"></span>'}
+      </div>
+      <div class="note">Daylight works best. Stand 30–50 cm away.</div>`}
+    </div>
+  </div>`}
+
+function healthBox(h){if(!h)return"";const c=h.status==="healthy"?"ok":h.status==="serious"?"bad":"warn";
+  return `<div class="health ${c}"><span class="hic">${c==="ok"?I.ok:I.alert}</span><div><b>${esc(h.headline)}</b><p>${esc(h.detail||"")}</p></div></div>`}
+function tiles(t){return `<div class="tiles">
+  <div class="tile"><span class="ic" style="background:var(--water-soft);color:var(--water)">${I.drop}</span><div><div class="k">Water</div><div class="v">${esc(t.water)}</div></div></div>
+  <div class="tile"><span class="ic" style="background:var(--sun-soft);color:var(--sun-deep)">${I.sun}</span><div><div class="k">Light</div><div class="v">${esc(t.light)}</div></div></div>
+  <div class="tile"><span class="ic" style="background:var(--accent-soft);color:var(--accent)">${I.hum}</span><div><div class="k">Humidity</div><div class="v">${esc(t.humidity)}</div></div></div>
+  <div class="tile"><span class="ic" style="background:var(--bad-soft);color:var(--bad)">${I.temp}</span><div><div class="k">Temperature</div><div class="v">${esc(t.temp)}</div></div></div></div>`}
+const rows=list=>`<div class="rows">${list.filter(r=>r[2]).map(([ic,k,v])=>`<div class="rowi"><span class="ic">${ic}</span><span class="k">${k}</span><span class="v">${esc(v)}</span></div>`).join("")}</div>`;
+const tipList=(arr,cls="")=>arr?.length?`<ul class="tips ${cls}">${arr.map((t,i)=>`<li><span>${cls?"!":i+1}</span>${esc(t)}</li>`).join("")}</ul>`:"";
+
+function vResult(r){
+  return `<div class="hero"><img alt="${esc(r.name)}" src="${scan.url}">
+      <div class="top pad"><button class="round glass" id="rescan" aria-label="Back to camera">${I.back}</button></div></div>
+    <div class="sheet pad">
+      <div class="title"><span class="match ${r.confidence<50?"low":""}">${I.check} ${Math.round(r.confidence)}% match</span>
+        <h1 style="margin-top:12px">${esc(r.name)}</h1><div class="sci">${esc(r.scientific)}${r.family?` · ${esc(r.family)}`:""}</div>
+        ${r.summary?`<p style="margin-top:12px">${esc(r.summary)}</p>`:""}</div>
+      ${healthBox(r.health)}
+      ${tiles({water:`Every ${r.water_days} days`,light:r.light,humidity:r.humidity,temp:r.temperature})}
+      ${r.watering_tip?`<div class="sec"><h3>When to water</h3><p>${esc(r.watering_tip)}</p></div>`:""}
+      <div class="sec"><h3>Care guide</h3>${rows([[I.soil,"Soil",r.soil],[I.feed,"Fertilizer",r.fertilizer],[I.paw,"Pets",r.toxicity],[I.level,"Difficulty",r.difficulty]])}</div>
+      ${r.tips?.length?`<div class="sec"><h3>Pro tips</h3>${tipList(r.tips)}</div>`:""}
+      ${r.problems?.length?`<div class="sec"><h3>Watch out for</h3>${tipList(r.problems,"warn")}</div>`:""}
+      ${r.alternatives?.length?`<p class="muted" style="font-size:14px">Could also be ${r.alternatives.map(esc).join(" or ")}.</p>`:""}
+      <div class="sec"><h3>Where does it live?</h3><div class="chips" id="locchips" role="group" aria-label="Location">${LOCS.map((l,i)=>`<button class="chip" data-loc="${l}" aria-pressed="${i===0}">${l}</button>`).join("")}</div></div>
+    </div>
+    <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="saveplant">Add to my plants</button></div></div>`}
+
+function vDetail(p){
+  if(!p)return vHome();
+  const c=p.care||{}, d=due(p), frac=left(p), R=42, C=2*Math.PI*R;
+  return `<div class="hero" style="background:${tint(p.name)}">${p.photo?`<img alt="${esc(p.name)}" src="${p.photo}">`:`<div class="ill">${art(p.name)}</div>`}
+      <div class="top pad"><button class="round glass" data-go="home" aria-label="Back">${I.back}</button></div></div>
+    <div class="sheet pad">
+      <div class="title"><div class="eyebrow">${esc(p.loc)}${p.example?" · Example":""}</div><h1 style="margin-top:6px">${esc(p.name)}</h1><div class="sci">${esc(p.sci||"")}</div></div>
+      <div class="waterbox">
+        <div class="ring"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--water-soft)" stroke-width="9"/><circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--water)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-frac)}"/></svg>
+          <div class="c"><div><b>${Math.max(0,d)}</b><br><small>${d===1?"day left":"days left"}</small></div></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0"><div><div style="font-weight:800">${d<=0?"Needs water now":dueTxt(d)}</div><div class="muted" style="font-size:13px">Last watered ${ago(p.last).toLowerCase()}</div></div>
+          <button class="btn" id="water" style="min-height:46px">${I.drop} Water now</button></div>
+      </div>
+      ${tiles({water:`Every ${p.every} days`,light:c.light||"—",humidity:c.humidity||"—",temp:c.temp||"—"})}
+      <div class="sec"><h3>Watering schedule</h3><div class="stepper"><button id="minus" aria-label="Water more often">−</button><output id="every">Every ${p.every} days</output><button id="plus" aria-label="Water less often">+</button></div></div>
+      <div class="sec"><h3>Care guide</h3>${rows([[I.soil,"Soil",c.soil],[I.feed,"Fertilizer",c.fertilizer],[I.paw,"Pets",c.toxic],[I.level,"Difficulty",c.difficulty],[I.calendar,"Next watering",d<=0?"Today":fmtDay(d,{weekday:"short",day:"numeric",month:"short"})]])}</div>
+      ${c.tips?.length?`<div class="sec"><h3>Pro tips</h3>${tipList(c.tips)}</div>`:""}
+      <div class="sec"><h3>Ask about your ${esc(p.name)}</h3>
+        <div class="suggest">${["Why are leaves turning yellow?","When should I repot?","Is it getting enough light?"].map(s=>`<button data-q="${s}">${s}</button>`).join("")}</div>
+        <form class="ask" id="askform"><input id="q" aria-label="Your question" placeholder="Ask anything about this plant" autocomplete="off"><button aria-label="Ask">${I.send}</button></form>
+        <div class="bubble" id="ans" aria-live="polite" hidden></div></div>
+      <button class="linkbtn" id="remove">Remove plant</button>
+    </div>`}
+
+function vSchedule(){
+  const sorted=[...plants].sort((a,b)=>due(a)-due(b));
+  const groups=[["Today",sorted.filter(p=>due(p)<=0)],["Tomorrow",sorted.filter(p=>due(p)===1)],["This week",sorted.filter(p=>due(p)>1&&due(p)<=7)],["Later",sorted.filter(p=>due(p)>7)]];
+  return `<div class="screen pad"><div><div class="eyebrow">Watering</div><h1 style="font-size:34px;font-weight:800">Schedule</h1></div>
+    ${plants.length?groups.filter(g=>g[1].length).map(([t,ps])=>`<div class="day"><div class="eyebrow">${t}</div>${ps.map(p=>`<div class="task">
+      <button class="th" data-open="${p.id}" style="background:${tint(p.name)}" aria-label="Open ${esc(p.name)}">${pic(p)}</button>
+      <div class="m"><b>${esc(p.name)}</b><small>${esc(p.loc)} · every ${p.every} days</small></div>
+      ${due(p)<=0?`<button class="check" data-water="${p.id}" aria-label="Mark ${esc(p.name)} watered">${I.check}</button>`:`<small class="muted" style="font-weight:700">${fmtDay(due(p),{weekday:"short"})}</small>`}
+    </div>`).join("")}</div>`).join(""):`<div class="empty"><h3>Nothing to water</h3><p class="muted">Add plants and their schedule shows up here.</p></div>`}
+  </div>`}
+
+/* ---------- render ---------- */
+function render(keepScroll){
+  const fullscreen=view==="scan"&&!scan.result;
+  document.getElementById("app").innerHTML=view==="scan"?(scan.result?vResult(scan.result):vScan()):view==="detail"?vDetail(plants.find(p=>p.id===current)):view==="schedule"?vSchedule():vHome();
+  document.getElementById("tabs").hidden=view==="scan"||view==="detail";
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-current",String(t.dataset.go===view)));
+  document.body.style.overflow=fullscreen?"hidden":"";
+  bind();if(!keepScroll)window.scrollTo(0,0);
+}
+
+/* ---------- photos ---------- */
+async function shrink(file){
+  let img=null;try{img=await createImageBitmap(file)}catch(e){img=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=URL.createObjectURL(file)})}
+  if(!img)return null;const W=img.width,H=img.height;
+  const draw=max=>{const s=Math.min(1,max/Math.max(W,H)),c=document.createElement("canvas");c.width=Math.round(W*s);c.height=Math.round(H*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c};
+  const blob=await new Promise(r=>draw(1024).toBlob(r,"image/jpeg",.85));
+  return {blob,thumb:draw(420).toDataURL("image/jpeg",.78)};
+}
+async function takeFile(f){
+  if(!f)return;view="scan";const s=await shrink(f);
+  if(!s){scan.error="That file isn't a photo we can read. Try a JPEG or PNG.";render();return}
+  if(scan.url)URL.revokeObjectURL(scan.url);
+  scan={file:s.blob,thumb:s.thumb,url:URL.createObjectURL(s.blob),busy:false,step:0,result:null,error:null};identify();
+}
+async function identify(){
+  scan.busy=true;scan.step=0;scan.error=null;render();
+  const t1=setTimeout(()=>{if(scan.busy){scan.step=1;render(true)}},1600),t2=setTimeout(()=>{if(scan.busy){scan.step=2;render(true)}},4500);
+  try{
+    const r=await aiIdentify(scan.file);
+    if(!r||r.is_plant===false)scan.error="No plant found in that photo. Get closer to the leaves and try again.";
+    else{r.confidence=Number(r.confidence)||0;r.water_days=Math.max(1,Math.round(Number(r.water_days)||7));scan.result=r}
+  }catch(e){scan.error=e.message}
+  clearTimeout(t1);clearTimeout(t2);scan.busy=false;render();
+}
+const resetScan=()=>{if(scan.url)URL.revokeObjectURL(scan.url);scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null}};
+
+/* ---------- events ---------- */
+const $=id=>document.getElementById(id);
+function bind(){
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{if(b.dataset.go==="scan")resetScan();view=b.dataset.go;render()});
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{current=b.dataset.open;view="detail";render()});
+  document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render(true)});
+  document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const p=plants.find(x=>x.id===b.dataset.water);p.last=Date.now();save();render(true);toast(`${p.name} watered`)});
+  ["cam","pick"].forEach(id=>{const i=$(id);if(i)i.onchange=()=>takeFile(i.files?.[0])});
+  if($("go"))$("go").onclick=identify;
+  if($("closecam"))$("closecam").onclick=()=>{resetScan();view="home";render()};
+  ["rescan","rescan2"].forEach(id=>{if($(id))$(id).onclick=()=>{resetScan();render()}});
+  if($("waterall"))$("waterall").onclick=()=>{const t=plants.filter(p=>due(p)<=0);t.forEach(p=>p.last=Date.now());save();render(true);toast(`${t.length} ${t.length===1?"plant":"plants"} watered`)};
+  const chips=$("locchips");if(chips)chips.onclick=e=>{const c=e.target.closest(".chip");if(!c)return;chips.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x===c)))};
+  if($("saveplant"))$("saveplant").onclick=()=>{const r=scan.result,loc=chips?.querySelector('[aria-pressed="true"]')?.dataset.loc||LOCS[0];
+    const p={id:"p"+Date.now(),name:r.name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),photo:scan.thumb,
+      care:{light:r.light,humidity:r.humidity,temp:r.temperature,soil:r.soil,fertilizer:r.fertilizer,toxic:r.toxicity,difficulty:r.difficulty,tips:r.tips||[]}};
+    plants.unshift(p);save();resetScan();current=p.id;view="detail";render();toast(`${p.name} added`)};
+  const p=plants.find(x=>x.id===current);
+  if($("water")&&p)$("water").onclick=()=>{p.last=Date.now();save();render(true);toast(`${p.name} watered`)};
+  const step=n=>{p.every=Math.min(60,Math.max(1,p.every+n));save();$("every").textContent=`Every ${p.every} days`};
+  if($("minus"))$("minus").onclick=()=>step(-1);
+  if($("plus"))$("plus").onclick=()=>step(1);
+  if($("remove")&&p)$("remove").onclick=e=>{const b=e.currentTarget;if(b.dataset.c){plants=plants.filter(x=>x!==p);save();view="home";render();toast("Plant removed")}else{b.dataset.c=1;b.textContent="Tap again to remove"}};
+  document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{$("q").value=b.dataset.q;ask(p)});
+  if($("askform"))$("askform").onsubmit=e=>{e.preventDefault();ask(p)};
+}
+async function ask(p){
+  const q=$("q").value.trim();if(!q)return;const out=$("ans");out.hidden=false;out.textContent="Thinking…";
+  const ctx=`Plant: ${p.name} (${p.sci||""}). Location: ${p.loc}. Watered every ${p.every} days, last watered ${ago(p.last).toLowerCase()}. Known care: ${JSON.stringify(p.care||{})}`;
+  try{await aiAsk(ctx,q,t=>{out.textContent=t})}catch(e){out.textContent=e.message}
+}
+document.addEventListener("paste",e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith("image/"));if(f)takeFile(f)});
+
+render();
+if("serviceWorker" in navigator && !window.claude && location.protocol==="https:") navigator.serviceWorker.register("/sw.js").catch(()=>{});
+</script>
+</body>
+</html>
