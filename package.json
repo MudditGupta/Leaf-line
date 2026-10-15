@@ -1,8 +1,12 @@
 {
   "name": "leafline",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Snap a plant, learn how to keep it alive.",
-  "engines": { "node": ">=18" }
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@netlify/blobs": "11.1.4",
+    "web-push": "3.6.7"
+  }
 }

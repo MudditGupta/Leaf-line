@@ -107,6 +107,25 @@ p{margin:0}
 .howi .n{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;flex:none}
 .howi b{display:block;font-size:15px}.howi small{color:var(--muted);font-size:13px}
 
+.langbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px}
+.whos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.who{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0}
+.who .wi{width:40px;height:40px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;color:var(--muted)}
+.who b{font-size:13px}.who small{font-size:11px;color:var(--muted);line-height:1.3}
+.who[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}.who[aria-pressed="true"] .wi{background:var(--accent);color:var(--accent-ink)}
+.nudge{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px dashed var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:18px;padding:12px 14px}
+.nudge .ni{width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.nudge>span:nth-child(2){flex:1;min-width:0}.nudge b{display:block;font-size:15px}.nudge small{color:var(--muted);font-size:13px}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.act{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:16px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--ink)}
+.act svg{color:var(--accent)}.act.on{background:var(--accent-soft)}
+.btn.iconly{width:52px;padding:0;flex:none}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:12px 14px}
+.toggle b{display:block}.toggle small{color:var(--muted)}
+.toggle i{width:50px;height:30px;border-radius:15px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.toggle i::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle[aria-checked="true"] i{background:var(--accent)}.toggle[aria-checked="true"] i::after{transform:translateX(20px)}
+
 /* scan */
 .cam{position:fixed;inset:0;background:#0B110E;color:#fff;display:flex;flex-direction:column;z-index:5}
 .cam .view{position:relative;flex:1;overflow:hidden;display:grid;place-items:center}
@@ -290,6 +309,11 @@ const I={
   pin:sv('<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/>',15,2.2),
   plus:sv('<path d="M12 5v14M5 12h14"/>',15,2.4),
   camera:sv('<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/>',34,1.8),
+  gear:sv('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>',20,1.8),
+  share:sv('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>',20,2),
+  home:sv('<path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-8Z"/>',22,1.9),
+  farmer:sv('<path d="M3 20h18"/><path d="M7 20c0-5 2-9 5-11M12 9c0-3 2-5 5-5 0 3-2 5-5 5ZM12 13c-3 0-5-2-5-5 3 0 5 2 5 5ZM17 20c0-3-1-6-3-8"/>',22,1.9),
+  nursery:sv('<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M9 21v-4a3 3 0 0 1 6 0v4"/><path d="M12 12c0-1.5 1-2.5 2.5-2.5 0 1.5-1 2.5-2.5 2.5Z"/>',22,1.9),
   bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
 };
 const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
@@ -305,10 +329,21 @@ const tint=seed=>TINTS[hash(seed)%TINTS.length];
 const pic=p=>p.photo?`<img alt="" src="${p.photo}">`:art(p.name);
 
 /* ---------- data (saved in this browser) ---------- */
-const DAY=86400000, LOCS=["Living room","Bedroom","Kitchen","Balcony","Office"];
+const DAY=86400000;
+const VAPID="BFqzYH8KPpJ3E8aQKGRn7KrPvYX687ZOLt2dg3olX--lVumkDpNUyIHmSYg31ZwAJ2F03fTWCrSdqhAA9XXLKpU";
+const getLS=(k,d)=>{try{return localStorage.getItem(k)??d}catch(e){return d}}, setLS=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const settings={profile:getLS("leafline.profile",""),lang:getLS("leafline.lang","en"),reminders:getLS("leafline.reminders","")==="on",
+  device:getLS("leafline.device","")||(()=>{const id=(crypto.randomUUID?.()||String(Math.random()).slice(2)+Date.now()).replace(/[^a-z0-9-]/gi,"");setLS("leafline.device",id);return id})()};
+const VOCAB={
+  home:{who:"Home gardener",whoSub:"Indoor plants, balcony, garden",mine:"My plants",place:"Room",places:["Living room","Bedroom","Kitchen","Balcony","Office"],item:"plant",items:"plants",hero:"Know every plant you own."},
+  farmer:{who:"Farmer",whoSub:"Crops, vegetables, orchards",mine:"My crops",place:"Field",places:["Field 1","Field 2","Greenhouse","Orchard","Kitchen garden"],item:"crop",items:"crops",hero:"Catch crop problems early."},
+  nursery:{who:"Nursery",whoSub:"Stock, propagation, customers",mine:"My stock",place:"Section",places:["Greenhouse","Shade net","Outdoor beds","Propagation","Display"],item:"plant",items:"plants",hero:"Care cards for every plant you sell."}};
+const V=()=>VOCAB[settings.profile]||VOCAB.home;
+let LOCS=V().places;
+function track(event){if(window.claude||location.protocol!=="https:")return;try{fetch("/api/track",{method:"POST",headers:{"Content-Type":"application/json"},keepalive:true,body:JSON.stringify({event,deviceId:settings.device,profile:settings.profile||"none",lang:settings.lang})}).catch(()=>{})}catch(e){}}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function load(){try{const v=JSON.parse(localStorage.getItem("leafline.plants"));if(Array.isArray(v))return v}catch(e){}return null}
-function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){}}
+function save(){try{localStorage.setItem("leafline.plants",JSON.stringify(plants))}catch(e){toast("Phone storage is full. Remove a plant to save more.")}syncRemindersSoon()}
 const now=Date.now();
 let plants=(load()??[]).filter(p=>!p.example);
 let view="home", current=null, filter="All";
@@ -322,7 +357,19 @@ const left=p=>Math.max(0,Math.min(1,1-(Date.now()-p.last)/(p.every*DAY)));
 const ago=t=>{const d=Math.floor((Date.now()-t)/DAY);return d<=0?"Today":d===1?"Yesterday":`${d} days ago`};
 const greet=()=>{const h=new Date().getHours();return h<12?"Good morning":h<17?"Good afternoon":"Good evening"};
 const fmtDay=(d,o)=>new Date(Date.now()+d*DAY).toLocaleDateString(undefined,o);
-function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
+let toast=function(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
+
+/* ---------- Hindi ---------- */
+const HI={"plant":"पौधा","plants":"पौधे","crop":"फसल","crops":"फसलें","I am a": "मैं हूँ", "Home gardener": "घर का बागवान", "Farmer": "किसान", "Nursery": "नर्सरी", "Indoor plants, balcony, garden": "घर के पौधे, बालकनी, बगीचा", "Crops, vegetables, orchards": "फसलें, सब्ज़ियाँ, बाग", "Stock, propagation, customers": "स्टॉक, पौध तैयार करना, ग्राहक", "Know every plant you own.": "अपने हर पौधे को जानें।", "Catch crop problems early.": "फसल की बीमारी जल्दी पकड़ें।", "Care cards for every plant you sell.": "हर बिकने वाले पौधे का केयर कार्ड।", "Point your camera at any plant. Get its name, a care plan and a health check in seconds.": "किसी भी पौधे पर कैमरा रखें। सेकंडों में नाम, देखभाल और सेहत जांच पाएं।", "Scan your first plant": "पहला पौधा स्कैन करें", "Snap a photo": "फ़ोटो लें", "Leaves in frame, daylight is best": "पत्ते फ्रेम में, दिन की रोशनी सबसे अच्छी", "Get the care plan": "देखभाल की योजना पाएं", "Water, light, soil, pets and problems": "पानी, रोशनी, मिट्टी, पालतू और समस्याएं", "Never forget watering": "पानी देना कभी न भूलें", "Your plants, with a countdown for each": "हर पौधे के लिए उलटी गिनती", "Good morning": "सुप्रभात", "Good afternoon": "नमस्ते", "Good evening": "शुभ संध्या", "Today": "आज", "Tomorrow": "कल", "This week": "इस हफ़्ते", "Later": "बाद में", "Everyone is happy": "सब पौधे खुश हैं", "Mark all watered": "सबको पानी दिया", "My plants": "मेरे पौधे", "My crops": "मेरी फसलें", "My stock": "मेरा स्टॉक", "All": "सभी", "Get watering reminders": "पानी के रिमाइंडर पाएं", "A notification at 9 AM when something is thirsty": "जब पौधे को पानी चाहिए, सुबह 9 बजे सूचना", "Plants": "पौधे", "Schedule": "शेड्यूल", "Watering": "पानी देना", "Water today": "आज पानी दें", "Nothing to water": "आज पानी नहीं देना", "Add plants and their schedule shows up here.": "पौधे जोड़ें, उनका शेड्यूल यहां दिखेगा।", "Identify": "पहचानें", "Health check": "सेहत जांच", "Upload": "अपलोड", "Tap to scan": "स्कैन करें", "Take photo": "फ़ोटो लें", "Check health": "सेहत जांचें", "Flip": "पलटें", "Fit the whole plant or a leaf in the frame": "पूरा पौधा या एक पत्ता फ्रेम में रखें", "Get close to the sick leaves": "खराब पत्तों के पास लाएं", "Point at any plant": "किसी भी पौधे पर कैमरा रखें", "Show us what's wrong": "दिखाइए क्या गड़बड़ है", "Opening camera…": "कैमरा खुल रहा है…", "Tap Allow if your browser asks.": "पूछे तो Allow दबाएं।", "Camera access is off": "कैमरा की अनुमति बंद है", "No camera found": "कैमरा नहीं मिला", "Upload a photo": "फ़ोटो अपलोड करें", "Upload a photo of your plant instead.": "इसकी जगह पौधे की फ़ोटो अपलोड करें।", "Finding leaves": "पत्ते ढूंढ रहे हैं", "Matching against thousands of species": "हज़ारों प्रजातियों से मिला रहे हैं", "Writing your care guide": "आपकी देखभाल गाइड लिख रहे हैं", "Looking at leaves and stems": "पत्ते और तने देख रहे हैं", "Checking for pests, rot and deficiencies": "कीड़े, सड़न और कमी जांच रहे हैं", "Writing a treatment plan": "इलाज की योजना लिख रहे हैं", "Water": "पानी", "Light": "रोशनी", "Humidity": "नमी", "Temperature": "तापमान", "When to water": "कब पानी दें", "Care guide": "देखभाल गाइड", "Soil": "मिट्टी", "Fertilizer": "खाद", "Pets": "पालतू जानवर", "Difficulty": "कठिनाई", "Pro tips": "ख़ास सुझाव", "Watch out for": "इनसे सावधान", "Scan again": "फिर स्कैन करें", "Save": "सेव करें", "Get care guide": "देखभाल गाइड पाएं", "Looks healthy": "स्वस्थ दिखता है", "Needs attention now": "अभी ध्यान चाहिए", "Minor problem": "छोटी समस्या", "Do this now": "अभी यह करें", "Keep it thriving": "ऐसे ही बढ़ने दें", "Likely causes": "संभावित कारण", "Stop it coming back": "दोबारा होने से रोकें", "This is guidance from a photo, not a lab test. If the plant keeps declining, ask a local nursery.": "यह फ़ोटो पर आधारित सलाह है, लैब टेस्ट नहीं। हालत बिगड़े तो नज़दीकी नर्सरी या कृषि केंद्र से पूछें।", "Needs water now": "अभी पानी चाहिए", "Water now": "अभी पानी दें", "Remind me": "याद दिलाएं", "Reminders on": "रिमाइंडर चालू", "Add to calendar": "कैलेंडर में जोड़ें", "Share": "शेयर", "Watering schedule": "पानी का शेड्यूल", "Next watering": "अगला पानी", "Remove plant": "पौधा हटाएं", "Tap again to remove": "हटाने के लिए फिर दबाएं", "Edit": "बदलें", "Why are leaves turning yellow?": "पत्ते पीले क्यों हो रहे हैं?", "When should I repot?": "गमला कब बदलूं?", "Is it getting enough light?": "क्या इसे पूरी रोशनी मिल रही है?", "Settings": "सेटिंग्स", "Language": "भाषा", "Watering reminders": "पानी के रिमाइंडर", "Daily at 9 AM": "रोज़ सुबह 9 बजे", "On for this phone": "इस फ़ोन पर चालू", "Off": "बंद", "Done": "हो गया", "Nickname": "नाम", "Room": "कमरा", "Field": "खेत", "Section": "सेक्शन", "Save changes": "बदलाव सेव करें", "Living room": "बैठक", "Bedroom": "बेडरूम", "Kitchen": "रसोई", "Balcony": "बालकनी", "Office": "ऑफ़िस", "Greenhouse": "ग्रीनहाउस", "Orchard": "बाग", "Kitchen garden": "किचन गार्डन", "Shade net": "शेड नेट", "Outdoor beds": "बाहर की क्यारियां", "Propagation": "पौध तैयार करना", "Display": "डिस्प्ले", "Field 1": "खेत 1", "Field 2": "खेत 2", "Easy": "आसान", "Moderate": "मध्यम", "Hard": "कठिन", "Act today": "आज ही करें", "No action needed": "कुछ करने की ज़रूरत नहीं", "Thinking…": "सोच रहे हैं…", "Try again": "फिर कोशिश करें", "Ask anything about this plant": "इस पौधे के बारे में कुछ भी पूछें"};
+const HI_RX=[["^1 (plant|crop) is thirsty$","1 $1 को पानी चाहिए"],["^(\\d+) (plants|crops) are thirsty$","$1 $2 को पानी चाहिए"],["^(\\d+) plants are thirsty$", "$1 पौधों को पानी चाहिए"], ["^(.+) is thirsty$", "$1 को पानी चाहिए"], ["^1 plant is thirsty$", "1 पौधे को पानी चाहिए"], ["^Every (\\d+) days$", "हर $1 दिन"], ["^In (\\d+) days$", "$1 दिन में"], ["^(\\d+)% match$", "$1% मिलान"], ["^(\\d+) (plants|plant|crops|crop)$", "$1 $2"], ["^Last watered (.+)$", "आख़िरी बार पानी: $1"], ["^days left$", "दिन बाकी"], ["^day left$", "दिन बाकी"], ["^Next up: (.+)$", "अगला: $1"], ["^Health check · (.+)$", "सेहत जांच · $1"], ["^Ask about your (.+)$", "अपने $1 के बारे में पूछें"], ["^Add to my (plants|crops|stock)$", "सूची में जोड़ें"], ["^Save (plant|crop)$", "सेव करें"], ["^Edit (plant|crop)$", "बदलें"], ["^New (room|field|section)$", "नया जोड़ें"], ["^(.+) · every (\\d+) days$", "$1 · हर $2 दिन"], ["^today$", "आज"], ["^yesterday$", "कल"], ["^(\\d+) days ago$", "$1 दिन पहले"]].map(([a,b])=>[new RegExp(a),b]);
+function tr(t){const k=t.trim();if(!k)return t;let out=HI[k];if(out===undefined){for(const [re,rep] of HI_RX){if(re.test(k)){out=k.replace(re,(...m)=>rep.replace(/\$(\d)/g,(_,i)=>HI[m[i]]??(m[i]&&m[i]!==k?tr(m[i]):m[i])));break}}}return out===undefined?t:t.replace(k,out)}
+function translate(){
+  if(settings.lang!=="hi")return;
+  const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement?.closest("script,style,.notr")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);nodes.forEach(n=>{const v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v});
+  document.querySelectorAll("[placeholder]").forEach(el=>el.placeholder=tr(el.placeholder));
+}
+const _toast=toast;toast=t=>_toast(settings.lang==="hi"?({"Reminders on. We'll ping you at 9 AM.":"रिमाइंडर चालू। सुबह 9 बजे सूचना आएगी।","Reminders off":"रिमाइंडर बंद","Saved":"सेव हो गया","Plant removed":"पौधा हटा दिया","Making your card…":"कार्ड बन रहा है…"}[t]||t.replace(/ watered$/," को पानी दिया")):t);
 
 /* ---------- AI: Claude when opened inside Claude, otherwise this app's own server (/api) ---------- */
 const PROMPT=`You are a plant identification and care expert. Identify the plant in the photo and assess its visible health.
@@ -351,23 +398,30 @@ async function api(path,body){
   let r;try{r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})}catch(e){throw new Error("No internet connection. Check it and try again.")}
   const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Something went wrong. Try again.");return j;
 }
+function withCtx(prompt){
+  const prof={farmer:"The user is a farmer in India growing field crops, vegetables or orchard trees. Give field-scale advice: irrigation interval in days, soil and fertiliser in farm terms, and for pests or disease give both organic and chemical options in general terms, telling them to confirm product and dose with their local Krishi Vigyan Kendra (KVK) or agriculture officer.",
+    nursery:"The user runs a plant nursery in India. Include propagation tips and phrase care advice so it can be passed on to customers buying the plant."}[settings.profile]||"";
+  const lang=settings.lang==="hi"?" Write every text value in simple Hindi (Devanagari script). Keep the JSON keys and the status/urgency/difficulty enum values in English exactly as specified. Keep the scientific name in Latin.":"";
+  return (prof+lang).trim()?`${prompt}\n\n${(prof+lang).trim()}`:prompt;
+}
 async function aiIdentify(blob,mode="identify"){
-  if(claudeAI){try{return await claudeAI.json(mode==="health"?HEALTH_PROMPT:PROMPT,{images:blob})}catch(e){throw new Error(CLAUDE_ERR[e?.code]||"Couldn't reach the plant expert. Try again.")}}
-  return api("/api/identify",{image:await toB64(blob),mime:"image/jpeg",mode});
+  if(claudeAI){try{return await claudeAI.json(withCtx(mode==="health"?HEALTH_PROMPT:PROMPT),{images:blob})}catch(e){throw new Error(CLAUDE_ERR[e?.code]||"Couldn't reach the plant expert. Try again.")}}
+  return api("/api/identify",{image:await toB64(blob),mime:"image/jpeg",mode,profile:settings.profile,lang:settings.lang});
 }
 async function aiAsk(ctx,q,onText){
-  if(claudeAI){try{const {text}=await claudeAI(`You are a friendly plant-care expert. ${ctx}\n\nAnswer the owner's question in 3-5 short sentences, practical and specific. Plain text, no markdown.\n\nQuestion: ${q}`,{onText:({text})=>onText(text),cache:false});return text}catch(e){throw new Error(e?.text||CLAUDE_ERR[e?.code]||"Couldn't get an answer. Try again.")}}
-  const j=await api("/api/ask",{context:ctx,question:q});onText(j.answer);return j.answer;
+  if(claudeAI){try{const {text}=await claudeAI(withCtx(`You are a friendly plant-care expert. ${ctx}\n\nAnswer the owner's question in 3-5 short sentences, practical and specific. Plain text, no markdown.\n\nQuestion: ${q}`),{onText:({text})=>onText(text),cache:false});return text}catch(e){throw new Error(e?.text||CLAUDE_ERR[e?.code]||"Couldn't get an answer. Try again.")}}
+  const j=await api("/api/ask",{context:ctx,question:q,profile:settings.profile,lang:settings.lang});onText(j.answer);return j.answer;
 }
 
 /* ---------- screens ---------- */
 function vWelcome(){
   return `<div class="screen pad welcome">
-    <div class="between"><div class="brand"><span class="logo">${I.leaf}</span>Leafline</div></div>
+    <div class="between"><div class="brand"><span class="logo">${I.leaf}</span>Leafline</div><button class="langbtn" id="langtoggle">${settings.lang==="hi"?"English":"हिंदी"}</button></div>
+    <div class="sec"><div class="eyebrow">I am a</div><div class="whos">${Object.entries(VOCAB).map(([k,v])=>`<button class="who" data-profile="${k}" aria-pressed="${(settings.profile||"home")===k}"><span class="wi">${I[k]}</span><b>${v.who}</b><small>${v.whoSub}</small></button>`).join("")}</div></div>
     <section class="hero-card">
       <div class="hero-art" aria-hidden="true"><svg viewBox="0 0 64 70" fill="none" stroke="#0E1612" stroke-width=".5" stroke-linejoin="round"><path d="M32 70V30"/><path d="M32 44c-16 0-26-10-26-26 15 0 26 9 26 26Z" fill="#3E7A58"/><path d="M32 38c13 0 22-8 22-22-13 0-22 7-22 22Z" fill="#5CA57A"/><path d="M32 58c-10 0-17-5-18-14 10 0 17 5 18 14Z" fill="#2F6347"/><path d="M14 28c5 2 10 6 13 11M50 22c-4 2-9 6-12 11" stroke="#1E4A33" stroke-width=".8"/></svg>
         <span class="tag t1">${I.drop} Every 7 days</span><span class="tag t2">${I.sun} Bright, indirect</span><span class="tag t3">${I.check} 94% match</span></div>
-      <div class="hero-copy"><h1>Know every plant you own.</h1>
+      <div class="hero-copy"><h1>${V().hero}</h1>
         <p>Point your camera at any plant. Get its name, a care plan and a health check in seconds.</p></div>
       <button class="btn sunbtn" data-go="scan">${I.scan} Scan your first plant</button>
     </section>
@@ -385,16 +439,17 @@ function vHome(){
   const d=new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"short"});
   return `<div class="screen pad">
     <div class="between hello"><div><div class="eyebrow">${d}</div><h1>${greet()}</h1></div>
-      <button class="round" data-go="schedule" aria-label="Watering schedule">${I.bell}</button></div>
+      <button class="round" id="opensettings" aria-label="Settings">${I.gear}</button></div>
+    ${!settings.reminders&&plants.length&&!window.claude?`<button class="nudge" id="nudge"><span class="ni">${I.bell}</span><span><b>Get watering reminders</b><small>A notification at 9 AM when something is thirsty</small></span>${I.send}</button>`:""}
     ${plants.length?`<section class="today">
       <div class="between" style="align-items:flex-start"><div><div class="lab">Today</div>
-        <h2>${thirsty.length?`${thirsty.length} ${thirsty.length===1?"plant is":"plants are"} thirsty`:"Everyone is happy"}</h2>
+        <h2>${thirsty.length?`${thirsty.length} ${thirsty.length===1?V().item+" is":V().items+" are"} thirsty`:"Everyone is happy"}</h2>
         <div class="sub">${thirsty.length?esc(thirsty.map(p=>p.name).join(", ")):`Next up: ${esc(sorted[0].name)}, ${dueTxt(due(sorted[0])).toLowerCase()}`}</div></div>
         <div class="drop">${I.drop}</div></div>
       ${thirsty.length?`<div class="between"><div class="faces">${thirsty.slice(0,4).map(p=>`<span style="background:${tint(p.name)}">${pic(p)}</span>`).join("")}</div>
         <button class="btn light" id="waterall" style="width:auto;min-height:46px">Mark all watered</button></div>`:""}
     </section>`:""}
-    <div class="between"><h2 style="font-size:24px;font-weight:800">My plants</h2><span class="muted" style="font-weight:700;font-size:14px">${plants.length} ${plants.length===1?"plant":"plants"}</span></div>
+    <div class="between"><h2 style="font-size:24px;font-weight:800">${V().mine}</h2><span class="muted" style="font-weight:700;font-size:14px">${plants.length} ${plants.length===1?V().item:V().items}</span></div>
     ${plants.length>1?`<div class="chips" role="group" aria-label="Filter by room">${locs.map(l=>`<button class="chip" data-filter="${esc(l)}" aria-pressed="${l===filter}">${esc(l)}</button>`).join("")}</div>`:""}
     ${list.length?`<div class="grid">${list.map(p=>{const dd=due(p);return `<button class="card" data-open="${p.id}">
         <div class="pic" style="background:${tint(p.name)}">${pic(p)}<span class="badge ${dd<=0?"due":""}">${dueTxt(dd)}</span></div>
@@ -460,7 +515,7 @@ function vResult(r){
       ${r.problems?.length?`<div class="sec"><h3>Watch out for</h3>${tipList(r.problems,"warn")}</div>`:""}
       ${r.alternatives?.length?`<p class="muted" style="font-size:14px">Could also be ${r.alternatives.map(esc).join(" or ")}.</p>`:""}
     </div>
-    <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="saveplant">Add to my plants</button></div></div>`}
+    <div class="dock pad"><div class="in"><button class="btn soft iconly" id="sharescan" aria-label="Share">${I.share}</button><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="saveplant">Save</button></div></div>`}
 
 function vHealth(r){
   const c=r.status==="healthy"?"ok":r.status==="serious"?"bad":"warn";
@@ -478,18 +533,32 @@ function vHealth(r){
     </div>
     <div class="dock pad"><div class="in"><button class="btn soft" id="rescan2">Scan again</button><button class="btn" id="fullguide">Get care guide</button></div></div>`}
 
+function vSettings(){
+  const ios=/iphone|ipad/i.test(navigator.userAgent), standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+  return `<div class="scrim" id="scrim"></div>
+  <div class="modal pad" role="dialog" aria-modal="true" aria-labelledby="settitle"><div class="in">
+    <div class="grab"></div><h2 id="settitle">Settings</h2>
+    <div class="field"><span>I am a</span><div class="whos">${Object.entries(VOCAB).map(([k,v])=>`<button class="who" data-profile="${k}" aria-pressed="${(settings.profile||"home")===k}"><span class="wi">${I[k]}</span><b>${v.who}</b></button>`).join("")}</div></div>
+    <div class="field"><span>Language</span><div class="chips wrap">
+      <button class="chip" data-lang="en" aria-pressed="${settings.lang==="en"}">English</button><button class="chip" data-lang="hi" aria-pressed="${settings.lang==="hi"}">हिंदी</button></div></div>
+    ${window.claude?"":`<div class="field"><span>Watering reminders</span>
+      <button class="toggle" id="remindtoggle" role="switch" aria-checked="${settings.reminders}"><span><b>Daily at 9 AM</b><small>${settings.reminders?"On for this phone":"Off"}</small></span><i></i></button>
+      ${ios&&!standalone?`<p class="muted" style="font-size:13px">On iPhone, first tap Share → Add to Home Screen, then open Leafline from your home screen to turn reminders on.</p>`:""}</div>`}
+    <button class="btn" id="closesettings">Done</button>
+  </div></div>`}
+
 function vSheet(){
-  const rooms=[...new Set([...LOCS,...plants.map(p=>p.loc)])];
+  const rooms=[...new Set([...LOCS,...plants.map(p=>p.loc)])];const vv=V();
   return `<div class="scrim" id="scrim"></div>
   <div class="modal pad" role="dialog" aria-modal="true" aria-labelledby="sheettitle"><div class="in">
     <div class="grab"></div>
-    <h2 id="sheettitle">${sheet.kind==="add"?"Add to my plants":"Edit plant"}</h2>
+    <h2 id="sheettitle">${sheet.kind==="add"?`Add to ${vv.mine.toLowerCase()}`:`Edit ${vv.item}`}</h2>
     <label class="field"><span>Nickname</span><input id="nick" value="${esc(sheet.name)}" maxlength="40" autocomplete="off"></label>
-    <div class="field"><span>Room</span><div class="chips wrap" id="roomchips" role="group" aria-label="Room">
+    <div class="field"><span>${vv.place}</span><div class="chips wrap" id="roomchips" role="group" aria-label="${vv.place}">
       ${rooms.map(l=>`<button class="chip" data-room="${esc(l)}" aria-pressed="${l===sheet.loc}">${esc(l)}</button>`).join("")}
-      <button class="chip dashed" id="newroom">${I.plus} New room</button></div>
+      <button class="chip dashed" id="newroom">${I.plus} New ${vv.place.toLowerCase()}</button></div>
       <input id="roominput" placeholder="e.g. Terrace, Study, Shop" maxlength="24" hidden autocomplete="off"></div>
-    <button class="btn" id="sheetsave">${sheet.kind==="add"?"Save plant":"Save changes"}</button>
+    <button class="btn" id="sheetsave">${sheet.kind==="add"?`Save ${vv.item}`:"Save changes"}</button>
   </div></div>`}
 
 function vDetail(p){
@@ -504,6 +573,11 @@ function vDetail(p){
           <div class="c"><div><b>${Math.max(0,d)}</b><br><small>${d===1?"day left":"days left"}</small></div></div></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0"><div><div style="font-weight:800">${d<=0?"Needs water now":dueTxt(d)}</div><div class="muted" style="font-size:13px">Last watered ${ago(p.last).toLowerCase()}</div></div>
           <button class="btn" id="water" style="min-height:46px">${I.drop} Water now</button></div>
+      </div>
+      <div class="acts">
+        ${window.claude?"":`<button class="act ${settings.reminders?"on":""}" id="${settings.reminders?"opensettings":"remind"}">${I.bell}<span>${settings.reminders?"Reminders on":"Remind me"}</span></button>`}
+        <button class="act" id="ics">${I.calendar}<span>Add to calendar</span></button>
+        <button class="act" id="sharep">${I.share}<span>Share</span></button>
       </div>
       ${tiles({water:`Every ${p.every} days`,light:c.light||"—",humidity:c.humidity||"—",temp:c.temp||"—"})}
       <div class="sec"><h3>Watering schedule</h3><div class="stepper"><button id="minus" aria-label="Water more often">−</button><output id="every">Every ${p.every} days</output><button id="plus" aria-label="Water less often">+</button></div></div>
@@ -530,11 +604,11 @@ function vSchedule(){
 /* ---------- render ---------- */
 function render(keepScroll){
   const fullscreen=view==="scan"&&!scan.result;
-  document.getElementById("app").innerHTML=(view==="scan"?(scan.result?(scan.result.kind==="health"?vHealth(scan.result):vResult(scan.result)):vScan()):view==="detail"?vDetail(plants.find(p=>p.id===current)):view==="schedule"?vSchedule():vHome())+(sheet?vSheet():"");
+  document.getElementById("app").innerHTML=(view==="scan"?(scan.result?(scan.result.kind==="health"?vHealth(scan.result):vResult(scan.result)):vScan()):view==="detail"?vDetail(plants.find(p=>p.id===current)):view==="schedule"?vSchedule():vHome())+(sheet?(sheet.kind==="settings"?vSettings():vSheet()):"");
   document.getElementById("tabs").hidden=view==="scan"||view==="detail";
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-current",String(t.dataset.go===view)));
   document.body.style.overflow=fullscreen?"hidden":"";
-  bind();if(!keepScroll)window.scrollTo(0,0);
+  bind();translate();if(!keepScroll)window.scrollTo(0,0);
   syncCamera();
 }
 
@@ -544,7 +618,7 @@ async function shrink(file){
   if(!img)return null;const W=img.width,H=img.height;
   const draw=max=>{const s=Math.min(1,max/Math.max(W,H)),c=document.createElement("canvas");c.width=Math.round(W*s);c.height=Math.round(H*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c};
   const blob=await new Promise(r=>draw(1024).toBlob(r,"image/jpeg",.85));
-  return {blob,thumb:draw(420).toDataURL("image/jpeg",.78)};
+  return {blob,thumb:draw(640).toDataURL("image/jpeg",.78)};
 }
 async function takeFile(f){
   if(!f)return;view="scan";const s=await shrink(f);
@@ -577,11 +651,11 @@ async function identify(){
   scan.busy=true;scan.step=0;scan.error=null;render();
   const t1=setTimeout(()=>{if(scan.busy){scan.step=1;render(true)}},1600),t2=setTimeout(()=>{if(scan.busy){scan.step=2;render(true)}},4500);
   try{
-    const mode=scan.mode,r=await aiIdentify(scan.file,mode);
+    const mode=scan.mode,r=await aiIdentify(scan.file,mode);track(mode==="health"?"scan_health":"scan_identify");
     if(!r||r.is_plant===false)scan.error="No plant found in that photo. Get closer to the leaves and try again.";
     else if(mode==="health"){r.kind="health";scan.result=r}
     else{r.kind="id";r.confidence=Number(r.confidence)||0;r.water_days=Math.max(1,Math.round(Number(r.water_days)||7));scan.result=r}
-  }catch(e){scan.error=e.message}
+  }catch(e){scan.error=e.message;track("scan_fail")}
   clearTimeout(t1);clearTimeout(t2);scan.busy=false;render();
 }
 const resetScan=(keepMode)=>{if(scan.url)URL.revokeObjectURL(scan.url);scan={file:null,url:null,thumb:null,busy:false,step:0,result:null,error:null,mode:keepMode?scan.mode:"identify"}};
@@ -602,11 +676,19 @@ function bind(){
   if($("flip"))$("flip").onclick=()=>{cam.facing=cam.facing==="environment"?"user":"environment";stopCamera();cam.state="idle";syncCamera()};
   if($("fullguide"))$("fullguide").onclick=()=>{scan.mode="identify";scan.result=null;identify()};
   if($("editplant"))$("editplant").onclick=()=>{const p=plants.find(x=>x.id===current);sheet={kind:"edit",id:p.id,name:p.name,loc:p.loc};render(true)};
-  if(sheet)bindSheet();
+  if(sheet)sheet.kind==="settings"?bindSettings():bindSheet();
+  document.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{setProfile(b.dataset.profile)});
+  if($("langtoggle"))$("langtoggle").onclick=()=>setLang(settings.lang==="hi"?"en":"hi");
+  if($("opensettings"))$("opensettings").onclick=()=>{sheet={kind:"settings"};render(true)};
+  if($("nudge"))$("nudge").onclick=()=>enableReminders();
+  if($("remind"))$("remind").onclick=()=>enableReminders();
+  if($("ics"))$("ics").onclick=()=>addToCalendar(plants.find(x=>x.id===current));
+  if($("sharep"))$("sharep").onclick=()=>{const p=plants.find(x=>x.id===current);shareCard({photo:p.photo,name:p.name,sci:p.sci,water:p.every,light:p.care?.light})};
+  if($("sharescan"))$("sharescan").onclick=()=>{const r=scan.result;shareCard({photo:scan.url,name:r.name,sci:r.scientific,water:r.water_days,light:r.light})};
   if($("waterall"))$("waterall").onclick=()=>{const t=plants.filter(p=>due(p)<=0);t.forEach(p=>p.last=Date.now());save();render(true);toast(`${t.length} ${t.length===1?"plant":"plants"} watered`)};
   if($("saveplant"))$("saveplant").onclick=()=>{sheet={kind:"add",name:scan.result.name,loc:filter!=="All"?filter:LOCS[0]};render(true)};
   const p=plants.find(x=>x.id===current);
-  if($("water")&&p)$("water").onclick=()=>{p.last=Date.now();save();render(true);toast(`${p.name} watered`)};
+  if($("water")&&p)$("water").onclick=()=>{p.last=Date.now();save();track("water");render(true);toast(`${p.name} watered`)};
   const step=n=>{p.every=Math.min(60,Math.max(1,p.every+n));save();$("every").textContent=`Every ${p.every} days`};
   if($("minus"))$("minus").onclick=()=>step(-1);
   if($("plus"))$("plus").onclick=()=>step(1);
@@ -614,6 +696,74 @@ function bind(){
   document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{$("q").value=b.dataset.q;ask(p)});
   if($("askform"))$("askform").onsubmit=e=>{e.preventDefault();ask(p)};
 }
+function setProfile(k){if(!VOCAB[k])return;const old=LOCS;settings.profile=k;setLS("leafline.profile",k);LOCS=V().places;track("profile");render(true)}
+function setLang(l){settings.lang=l;setLS("leafline.lang",l);document.documentElement.lang=l;track("lang");render(true);syncRemindersSoon()}
+function bindSettings(){
+  const close=()=>{sheet=null;render(true)};
+  $("scrim").onclick=close;$("closesettings").onclick=close;
+  document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+  if($("remindtoggle"))$("remindtoggle").onclick=()=>settings.reminders?disableReminders():enableReminders();
+}
+
+/* ---------- reminders (web push) ---------- */
+function b64ToU8(b){const p="=".repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))}
+async function enableReminders(){
+  if(!("serviceWorker" in navigator)||!("PushManager" in window)){
+    toast(/iphone|ipad/i.test(navigator.userAgent)?"Add Leafline to your Home Screen first, then try again":"This browser can't send reminders. Use Add to calendar instead.");return}
+  const perm=await Notification.requestPermission();
+  if(perm!=="granted"){toast("Notifications are blocked. Allow them in browser settings.");return}
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToU8(VAPID)});
+    await postReminders(sub);settings.reminders=true;setLS("leafline.reminders","on");track("reminders_on");
+    render(true);toast("Reminders on. We'll ping you at 9 AM.");
+  }catch(e){toast("Couldn't turn on reminders. Try again.")}
+}
+async function disableReminders(){
+  try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe();
+    await fetch("/api/reminders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:settings.device,subscription:null})})}catch(e){}
+  settings.reminders=false;setLS("leafline.reminders","");track("reminders_off");render(true);toast("Reminders off");
+}
+async function postReminders(sub){
+  await fetch("/api/reminders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:settings.device,subscription:sub.toJSON(),lang:settings.lang,
+    plants:plants.map(p=>({id:p.id,name:p.name,next:p.last+p.every*DAY}))})});
+}
+let syncT;function syncRemindersSoon(){if(!settings.reminders||!("serviceWorker" in navigator))return;clearTimeout(syncT);syncT=setTimeout(async()=>{try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await postReminders(sub)}catch(e){}},800)}
+
+/* ---------- calendar (.ics) ---------- */
+function addToCalendar(p){
+  if(!p)return;const d=new Date(p.last+p.every*DAY);d.setHours(9,0,0,0);const pad=n=>String(n).padStart(2,"0");
+  const f=x=>`${x.getFullYear()}${pad(x.getMonth()+1)}${pad(x.getDate())}T${pad(x.getHours())}${pad(x.getMinutes())}00`;
+  const e=new Date(d.getTime()+15*60000);
+  const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Leafline//EN","BEGIN:VEVENT",`UID:${p.id}@leafline`,`DTSTAMP:${f(new Date())}`,`DTSTART:${f(d)}`,`DTEND:${f(e)}`,
+    `RRULE:FREQ=DAILY;INTERVAL=${p.every}`,`SUMMARY:Water ${p.name.replace(/[,;\\]/g," ")}`,`DESCRIPTION:Leafline reminder. Open https://leaf-line.netlify.app`,"BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:Water your plant","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const url=URL.createObjectURL(new Blob([ics],{type:"text/calendar"}));const a=document.createElement("a");a.href=url;a.download=`water-${p.name.replace(/\W+/g,"-").toLowerCase()}.ics`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);track("calendar");toast("Open the downloaded file to add it to your calendar");
+}
+
+/* ---------- share card ---------- */
+async function shareCard({photo,name,sci,water,light}){
+  toast("Making your card…");
+  try{
+    await document.fonts?.ready;
+    const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+    x.fillStyle="#13201A";x.fillRect(0,0,W,H);
+    if(photo){const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=photo});
+      const ph=860,s=Math.max(W/img.width,ph/img.height),w=img.width*s,h=img.height*s;
+      x.save();x.beginPath();x.roundRect(40,40,W-80,ph-40,48);x.clip();x.drawImage(img,(W-w)/2,40+(ph-40-h)/2,w,h);x.restore();}
+    const tag=(t,X,Y,bg,fg)=>{x.font="800 34px Manrope, sans-serif";const tw=x.measureText(t).width+56;x.fillStyle=bg;x.beginPath();x.roundRect(X,Y,tw,72,36);x.fill();x.fillStyle=fg;x.fillText(t,X+28,Y+47);return tw};
+    x.fillStyle="#FFFFFF";x.font="800 88px 'Bricolage Grotesque', Georgia, serif";x.fillText(name.slice(0,22),64,1000);
+    x.fillStyle="#A9B8AE";x.font="italic 500 40px Manrope, sans-serif";x.fillText((sci||"").slice(0,40),66,1056);
+    let X=64;if(water)X+=tag(`Water every ${water} days`,X,1100,"#F4C95D","#13201A")+16;if(light)tag(String(light).slice(0,22),X,1100,"#EEF2EC","#13201A");
+    x.fillStyle="#5CC08F";x.font="800 38px 'Bricolage Grotesque', sans-serif";x.fillText("Leafline",64,1280);
+    x.fillStyle="#A9B8AE";x.font="600 32px Manrope, sans-serif";x.fillText("Identified free at leaf-line.netlify.app",270,1280);
+    const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.9));const file=new File([blob],`${name.replace(/\W+/g,"-")}-leafline.jpg`,{type:"image/jpeg"});
+    track("share");
+    if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],text:`I just identified my ${name} with Leafline 🌿 Try it free: https://leaf-line.netlify.app`});return}
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();toast("Card saved to your downloads");
+  }catch(e){if(e?.name!=="AbortError")toast("Couldn't make the card. Try again.")}
+}
+
 function bindSheet(){
   const close=()=>{sheet=null;render(true)};
   $("scrim").onclick=close;
@@ -625,7 +775,7 @@ function bindSheet(){
     if(sheet.kind==="add"){const r=scan.result;
       const p={id:"p"+Date.now(),name,sci:r.scientific,loc,every:r.water_days,last:Date.now(),photo:scan.thumb,
         care:{light:r.light,humidity:r.humidity,temp:r.temperature,soil:r.soil,fertilizer:r.fertilizer,toxic:r.toxicity,difficulty:r.difficulty,tips:r.tips||[]}};
-      plants.unshift(p);save();resetScan();sheet=null;current=p.id;view="detail";render();toast(`${name} added to ${loc}`)}
+      plants.unshift(p);save();track("save_plant");resetScan();sheet=null;current=p.id;view="detail";render();toast(`${name} added to ${loc}`)}
     else{const p=plants.find(x=>x.id===sheet.id);p.name=name;p.loc=loc;save();sheet=null;render(true);toast("Saved")}
   };
   document.onkeydown=e=>{if(e.key==="Escape"&&sheet)close()};
@@ -633,11 +783,13 @@ function bindSheet(){
 async function ask(p){
   const q=$("q").value.trim();if(!q)return;const out=$("ans");out.hidden=false;out.textContent="Thinking…";
   const ctx=`Plant: ${p.name} (${p.sci||""}). Location: ${p.loc}. Watered every ${p.every} days, last watered ${ago(p.last).toLowerCase()}. Known care: ${JSON.stringify(p.care||{})}`;
-  try{await aiAsk(ctx,q,t=>{out.textContent=t})}catch(e){out.textContent=e.message}
+  track("ask");try{await aiAsk(ctx,q,t=>{out.textContent=t})}catch(e){out.textContent=e.message}
 }
 document.addEventListener("paste",e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith("image/"));if(f)takeFile(f)});
 
-render();
+const deep=new URLSearchParams(location.search).get("plant");if(deep&&plants.some(p=>p.id===deep)){current=deep;view="detail";history.replaceState(null,"","/")}
+document.documentElement.lang=settings.lang;
+render();track("open");
 if("serviceWorker" in navigator && !window.claude && location.protocol==="https:") navigator.serviceWorker.register("/sw.js").catch(()=>{});
 </script>
 </body>

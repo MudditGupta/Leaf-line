@@ -23,6 +23,20 @@ Or from a laptop with Node: `npx netlify-cli deploy --prod` in this folder.
 | `GEMINI_API_KEY` | yes | none |
 | `GEMINI_MODEL` | no | `gemini-3.5-flash-lite,gemini-3.1-flash-lite` (tried in order) |
 
+## Features
+
+- Identify + health check (camera or upload), care guide, ask-a-question
+- Profiles: home gardener, farmer, nursery (changes wording, rooms/fields, and AI advice)
+- English / हिंदी (UI + AI answers)
+- Watering reminders: web push at 9 AM IST via `netlify/functions/daily-reminders.mjs`; calendar (.ics) fallback
+- Share card for WhatsApp / Instagram
+- Anonymous usage tracking (`/api/track`) and a private stats page at `/stats?key=STATS_KEY`
+
+| Extra variable | Purpose |
+|---|---|
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | push notifications |
+| `STATS_KEY` | password for /stats |
+
 ## Notes
 
 - Free Gemini tier has rate limits; heavy use shows "Free limit reached, wait a minute".

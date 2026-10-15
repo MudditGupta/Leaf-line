@@ -1,4 +1,5 @@
 import { gemini, json } from "../lib/gemini.mjs";
+import { withContext } from "../lib/context.mjs";
 
 const PROMPT = `You are a plant identification and care expert. Identify the plant in the photo and assess its visible health.
 Reply with ONLY a JSON object of this exact shape:
@@ -22,11 +23,11 @@ const MIMES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export default async (req) => {
   try {
-    const { image, mime = "image/jpeg", mode = "identify" } = await req.json().catch(() => ({}));
+    const { image, mime = "image/jpeg", mode = "identify", profile, lang } = await req.json().catch(() => ({}));
     if (typeof image !== "string" || !image) return json(400, { error: "No photo received." });
     if (!MIMES.has(mime)) return json(400, { error: "Use a JPEG, PNG or WebP photo." });
     if (image.length > 4_000_000) return json(413, { error: "Photo is too large. Try again." });
-    const text = await gemini([{ text: mode === "health" ? HEALTH_PROMPT : PROMPT }, { inline_data: { mime_type: mime, data: image } }], { json: true });
+    const text = await gemini([{ text: withContext(mode === "health" ? HEALTH_PROMPT : PROMPT, { profile, lang }) }, { inline_data: { mime_type: mime, data: image } }], { json: true });
     try { return json(200, JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g, ""))); }
     catch { return json(502, { error: "The answer came back garbled. Try again." }); }
   } catch (e) {
