@@ -125,7 +125,7 @@ p{margin:0}
 .hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(14,20,17,.7);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:2}
 .hint b{width:8px;height:8px;border-radius:50%;background:#7FD4A4}
 .cam .bar{padding-top:18px;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;background:#0B110E}
-.ctrls{width:100%;max-width:340px;display:flex;align-items:center;justify-content:space-between}
+.ctrls{width:100%;max-width:340px;display:flex;align-items:flex-end;justify-content:space-between}
 .shutter{width:78px;height:78px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center;cursor:pointer;position:relative}
 .shutter span{width:58px;height:58px;border-radius:50%;background:#fff;transition:transform .15s}
 .shutter:active span{transform:scale(.9)}
@@ -137,6 +137,9 @@ p{margin:0}
 .cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0B110E}
 .camstate{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:300px;padding:0 20px}
 .camstate b{font-size:18px}.camstate span{color:#A9B8AE;font-size:14px}
+.camstate .bigic.sun{background:#F4C95D;color:#13201A;width:76px;height:76px;border-radius:24px;margin-bottom:6px}
+.camstate.idle b{font-size:22px;font-family:var(--display)}
+.camstate strong{color:#fff}
 .camstate .bigic{width:64px;height:64px;border-radius:20px;background:#1F2A24;display:grid;place-items:center;color:#fff}
 .spin{width:28px;height:28px;border-radius:50%;border:3px solid #2E3B33;border-top-color:#5CC08F;animation:spin .8s linear infinite}
 .ctl{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#D3DDD6;background:none;border:0;padding:0;cursor:pointer;width:96px;position:relative}
@@ -286,6 +289,7 @@ const I={
   flip:sv('<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',24,1.8),
   pin:sv('<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/>',15,2.2),
   plus:sv('<path d="M12 5v14M5 12h14"/>',15,2.4),
+  camera:sv('<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/>',34,1.8),
   bell:sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',20,1.9),
 };
 const TINTS=["#D6E8DD","#E4EBD3","#DCE6E3","#EFE2CF","#E2E3EF"];
@@ -409,13 +413,14 @@ function vScan(){
       ${!scan.url&&cam.state==="starting"?`<div class="camstate"><div class="spin"></div><b>Opening camera…</b><span>Tap Allow if your browser asks.</span></div>`:""}
       ${noCam?`<div class="camstate"><span class="bigic">${I.gallery}</span><b>${cam.state==="blocked"?"Camera access is off":"No camera found"}</b><span>${cam.state==="blocked"?"Allow camera for this site in your browser settings, or upload a photo instead.":"Upload a photo of your plant instead."}</span>
         <label class="btn sunbtn" for="pick" style="width:auto;margin-top:6px">Upload a photo</label></div>`:""}
+      ${!scan.url&&!live&&!noCam&&cam.state!=="starting"?`<div class="camstate idle"><span class="bigic sun">${I.camera}</span><b>${health?"Show us what's wrong":"Point at any plant"}</b><span>Tap <strong>Take photo</strong> to open your camera, or upload one from your gallery.</span></div>`:""}
       ${busy?'<div class="scanline"></div>':""}
       <div class="top pad"><button class="round glass" id="closecam" aria-label="Close">${I.close}</button>
         <div class="seg" role="tablist" aria-label="Scan mode">
           <button role="tab" data-mode="identify" aria-selected="${!health}" class="${health?"":"on"}" ${busy?"disabled":""}>Identify</button>
           <button role="tab" data-mode="health" aria-selected="${health}" class="${health?"on":""}" ${busy?"disabled":""}>Health check</button></div>
         <span style="width:44px"></span></div>
-      ${busy||noCam?"":`<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      ${busy||noCam||(!live&&!scan.url)?"":`<div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="hint"><b></b>${health?"Get close to the sick leaves":"Fit the whole plant or a leaf in the frame"}</div>`}
     </div>
     <div class="bar pad">
