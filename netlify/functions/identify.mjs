@@ -1,5 +1,6 @@
 import { gemini, json } from "../lib/gemini.mjs";
 import { withContext } from "../lib/context.mjs";
+import { useQuota, refundScan } from "../lib/quota.mjs";
 
 const PROMPT = `You are a plant identification and care expert. Identify the plant in the photo and assess its visible health.
 Reply with ONLY a JSON object of this exact shape:
@@ -21,18 +22,27 @@ Reply with ONLY a JSON object of this exact shape:
 If the photo has no plant, return {"is_plant":false}. Keep every string short.`;
 const MIMES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-export default async (req) => {
+export default async (req, context) => {
+  let q;
   try {
-    const { image, mime = "image/jpeg", mode = "identify", profile, lang } = await req.json().catch(() => ({}));
+    const { image, mime = "image/jpeg", mode = "identify", profile, lang, deviceId } = await req.json().catch(() => ({}));
     if (typeof image !== "string" || !image) return json(400, { error: "No photo received." });
     if (!MIMES.has(mime)) return json(400, { error: "Use a JPEG, PNG or WebP photo." });
     if (image.length > 4_000_000) return json(413, { error: "Photo is too large. Try again." });
+    q = await useQuota(req, context, "scan", deviceId);
     const text = await gemini([{ text: withContext(mode === "health" ? HEALTH_PROMPT : PROMPT, { profile, lang }) }, { inline_data: { mime_type: mime, data: image } }], { json: true });
-    try { return json(200, JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g, ""))); }
-    catch { return json(502, { error: "The answer came back garbled. Try again." }); }
+    let data;
+    try { data = JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g, "")); }
+    catch { await refundScan(q.who, context); return json(502, { error: "The answer came back garbled. Try again." }); }
+    if (data?.is_plant === false) await refundScan(q.who, context);
+    return json(200, { ...data, _left: data?.is_plant === false ? q.left + 1 : q.left, _member: q.member });
   } catch (e) {
-    return json(e.status || 500, { error: e.message || "Something went wrong. Try again." });
+    if (q && e.code === undefined) await refundScan(q.who, context);
+    return json(e.status || 500, { error: e.message || "Something went wrong. Try again.", code: e.code, signIn: !!e.signIn });
   }
 };
 
-export const config = { path: "/api/identify", method: "POST" };
+export const config = {
+  path: "/api/identify", method: "POST",
+  rateLimit: { windowLimit: 6, windowSize: 60, aggregateBy: ["ip", "domain"] }, // burst protection: 6 scans/min per network
+};

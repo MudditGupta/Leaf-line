@@ -36,6 +36,13 @@ Or from a laptop with Node: `npx netlify-cli deploy --prod` in this folder.
 |---|---|
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | push notifications |
 | `STATS_KEY` | password for /stats |
+| `GUEST_DAILY_SCANS` | scans per day per phone without login (default 3) |
+| `MEMBER_DAILY_SCANS` | scans per day per signed-in account (default 15) |
+| `IP_DAILY_SCANS` | scans per day per network (default 40) |
+| `TOTAL_DAILY_SCANS` | scans per day for the whole app (default 300) |
+| `DAILY_QUESTIONS` | plant questions per person per day (default 20) |
+
+Failed scans and "no plant found" don't count. Bursts are capped at 6 scans/min per network.
 
 ## Notes
 
