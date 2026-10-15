@@ -1,12 +1,14 @@
 // Private stats page: /stats?key=YOUR_STATS_KEY
 import { getStore } from "@netlify/blobs";
+import { timingSafeEqual, createHash } from "node:crypto";
+const same = (a, b) => timingSafeEqual(createHash("sha256").update(String(a)).digest(), createHash("sha256").update(String(b)).digest());
 
-const LABEL = { open: "App opens", scan_identify: "Plant IDs", scan_health: "Health checks", scan_fail: "Failed scans", save_plant: "Plants saved", water: "Waterings logged", ask: "Questions asked", share: "Shares", reminders_on: "Reminders turned on", reminders_off: "Reminders turned off", calendar: "Calendar adds", profile: "Profile picked", lang: "Language switched", signup: "Sign-ups", login: "Logins", logout: "Logouts" };
+const LABEL = { open: "App opens", scan_identify: "Plant IDs", scan_health: "Health checks", scan_fail: "Failed scans", save_plant: "Plants saved", water: "Waterings logged", ask: "Questions asked", share: "Shares", reminders_on: "Reminders turned on", reminders_off: "Reminders turned off", calendar: "Calendar adds", profile: "Profile picked", lang: "Language switched", signup: "Sign-ups", login: "Logins", logout: "Logouts", weather_on: "Weather turned on" };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 export default async (req) => {
   const key = Netlify.env.get("STATS_KEY");
-  if (!key || new URL(req.url).searchParams.get("key") !== key) return new Response("Not found", { status: 404 });
+  if (!key || !same(new URL(req.url).searchParams.get("key") || "", key)) return new Response("Not found", { status: 404 });
   const days = [];
   for (let i = 29; i >= 0; i--) days.push(new Date(Date.now() + 5.5 * 3600e3 - i * 864e5).toISOString().slice(0, 10));
   const store = getStore("analytics");
@@ -43,7 +45,7 @@ h1{font-size:28px;margin:0 0 4px}p.s{color:#55655B;margin:0 0 20px}.kpis{display
 <div class="grid"><div class="card"><h2>What people do</h2><ul>${Object.keys(LABEL).filter(k => totals[k]).map(k => `<li><span>${LABEL[k]}</span><b>${totals[k]}</b></li>`).join("") || "<li><span>No data yet</span></li>"}</ul></div>
 <div class="card"><h2>Who they are</h2><ul>${top(profiles)}</ul><h2 style="margin-top:16px">Language</h2><ul>${top(langs)}</ul></div>
 <div class="card"><h2>Top cities</h2><ul>${top(cities)}</ul></div></div></main></body></html>`;
-  return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+  return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex", "referrer-policy": "no-referrer" } });
 };
 
-export const config = { path: "/stats", method: "GET" };
+export const config = { path: "/stats", method: "GET", rateLimit: { windowLimit: 10, windowSize: 60, aggregateBy: ["ip", "domain"] } };

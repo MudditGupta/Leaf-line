@@ -23,4 +23,4 @@ export default async (req, context) => {
   return new Response(null, { status: 204 });
 };
 
-export const config = { path: "/api/photo/:id", method: ["GET", "PUT", "DELETE"] };
+export const config = { path: "/api/photo/:id", method: ["GET", "PUT", "DELETE"], rateLimit: { windowLimit: 90, windowSize: 60, aggregateBy: ["ip", "domain"] } };

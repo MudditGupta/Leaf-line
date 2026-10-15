@@ -1,6 +1,7 @@
 // Runs every morning at 9:00 AM IST (03:30 UTC) and pushes "your plants are thirsty" notifications.
 import { getStore } from "@netlify/blobs";
 import webpush from "web-push";
+import { PUSH_HOSTS } from "../lib/push.mjs";
 
 export default async () => {
   const pub = Netlify.env.get("VAPID_PUBLIC_KEY"), priv = Netlify.env.get("VAPID_PRIVATE_KEY");
@@ -13,6 +14,7 @@ export default async () => {
   for (const { key } of blobs) {
     const rec = await store.get(key, { type: "json" });
     if (!rec?.subscription) continue;
+    try { if (!PUSH_HOSTS.test(new URL(rec.subscription.endpoint).hostname)) { await store.delete(key); continue; } } catch { await store.delete(key); continue; }
     const due = (rec.plants || []).filter(p => p.next && p.next <= endOfToday);
     if (!due.length) continue;
     const names = due.map(p => p.name);

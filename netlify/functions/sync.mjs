@@ -9,6 +9,10 @@ function cleanPlant(p) {
     id: clip(p.id, 40), name: clip(p.name, 60), sci: clip(p.sci, 80), loc: clip(p.loc, 40),
     every: Math.min(365, Math.max(1, Number(p.every) || 7)), last: Number(p.last) || Date.now(),
     updated: Number(p.updated) || Number(p.last) || Date.now(), hasPhoto: !!p.hasPhoto, deleted: !!p.deleted,
+    log: (Array.isArray(p.log) ? p.log : []).slice(0, 40).map(e => ({
+      t: Number(e.t) || 0, type: ["water", "rain", "feed", "repot", "note", "photo", "health", "added"].includes(e.type) ? e.type : "note",
+      text: clip(e.text, 160), status: ["healthy", "minor", "serious"].includes(e.status) ? e.status : undefined, hasPhoto: !!e.hasPhoto,
+    })).filter(e => e.t > 0),
     care: Object.fromEntries(Object.entries(care).slice(0, 12).map(([k, v]) => [clip(k, 20), Array.isArray(v) ? v.slice(0, 6).map(x => clip(x, 200)) : clip(v, 200)])),
   };
 }
@@ -34,4 +38,4 @@ export default async (req) => {
   return Response.json({ ok: true, updated: doc.updated });
 };
 
-export const config = { path: "/api/sync", method: ["GET", "PUT"] };
+export const config = { path: "/api/sync", method: ["GET", "PUT"], rateLimit: { windowLimit: 40, windowSize: 60, aggregateBy: ["ip", "domain"] } };
