@@ -281,6 +281,44 @@ p{margin:0}
 .tab[aria-current="true"]{color:var(--accent)}
 .fab{justify-self:center;width:66px;height:66px;border-radius:50%;border:5px solid var(--bg);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;margin-top:-40px;box-shadow:0 10px 24px rgba(30,107,76,.35)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(104px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:9;box-shadow:var(--shadow);white-space:nowrap}
+
+/* ---------- tablet & desktop ---------- */
+@media (min-width:860px){
+  body{font-size:16px}
+  .app{max-width:1120px}
+  .screen{padding-top:40px;gap:28px}
+  .hello h1{font-size:44px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+  .today{flex-direction:row;align-items:center;justify-content:space-between;padding:28px 32px}
+  .today>.between:first-child{flex:1}
+  .today h2{font-size:32px}
+  .nudge{max-width:560px}
+  .welcome{display:grid;grid-template-columns:1.15fr 1fr;column-gap:40px;align-items:start}
+  .welcome>.between{grid-column:1/-1}
+  .welcome>.sec{grid-column:2;grid-row:2}
+  .welcome>.hero-card{grid-column:1;grid-row:2/span 3;flex-direction:row;flex-wrap:wrap}
+  .welcome>.hero-card .hero-art{flex:1 1 100%;height:340px}
+  .welcome>.how{grid-column:2;grid-row:3}
+  .welcome>p{grid-column:2;grid-row:4;text-align:left!important}
+  .hero-copy h1{font-size:44px}
+  .tabs .in{max-width:520px}
+  /* result + plant page: photo left, details right */
+  .app:has(>.hero){max-width:none}
+  .hero{position:fixed;left:0;top:0;bottom:0;width:44vw;max-width:none;height:auto;margin:0}
+  .sheet{margin:0 0 0 44vw;border-radius:0;padding-top:48px;padding-left:56px;padding-right:56px;max-width:760px;min-height:100vh}
+  .dock{left:44vw}
+  .dock .in{max-width:648px;margin:0 0 0 56px}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .title h1{font-size:48px}
+  /* camera: centred viewfinder */
+  .cam .view{max-width:none}
+  .ctrls{max-width:420px}
+  /* sheets become centred dialogs */
+  .modal{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(520px,92vw);border-radius:28px;padding-top:20px;animation:fade .2s}
+  .modal .grab{display:none}
+  .toast{bottom:110px}
+}
+@media (min-width:1280px){.hero{width:48vw}.sheet,.dock{margin-left:48vw}.dock{left:48vw}}
 </style>
 </head>
 <body>
