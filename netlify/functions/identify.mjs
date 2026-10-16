@@ -1,6 +1,7 @@
 import { gemini, json } from "../lib/gemini.mjs";
 import { withContext } from "../lib/context.mjs";
 import { useQuota, refundScan } from "../lib/quota.mjs";
+import { recordPlant, recordProblem, recordError } from "../lib/events.mjs";
 
 const PROMPT = `You are a plant identification and care expert. Identify the plant in the photo and assess its visible health.
 Reply with ONLY a JSON object of this exact shape:
@@ -26,18 +27,24 @@ export default async (req, context) => {
   let q;
   try {
     const { image, mime = "image/jpeg", mode = "identify", profile, lang, deviceId } = await req.json().catch(() => ({}));
-    if (typeof image !== "string" || !image) return json(400, { error: "No photo received." });
+    if (typeof image !== "string" || !image) { await recordError("bad_photo"); return json(400, { error: "No photo received." }); }
     if (!MIMES.has(mime)) return json(400, { error: "Use a JPEG, PNG or WebP photo." });
     if (image.length > 4_000_000) return json(413, { error: "Photo is too large. Try again." });
     q = await useQuota(req, context, "scan", deviceId);
     const text = await gemini([{ text: withContext(mode === "health" ? HEALTH_PROMPT : PROMPT, { profile, lang }) }, { inline_data: { mime_type: mime, data: image } }], { json: true });
     let data;
     try { data = JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g, "")); }
-    catch { await refundScan(q.who, context); return json(502, { error: "The answer came back garbled. Try again." }); }
-    if (data?.is_plant === false) await refundScan(q.who, context);
+    catch { await refundScan(q.who, context); await recordError("garbled"); return json(502, { error: "The answer came back garbled. Try again." }); }
+    if (data?.is_plant === false) { await refundScan(q.who, context); await recordError("no_plant"); }
+    else {
+      await recordPlant(mode, data?.name, profile);
+      const st = mode === "health" ? data?.status : data?.health?.status;
+      if (st === "minor" || st === "serious") await recordProblem(st, mode === "health" ? data?.headline : data?.health?.headline);
+    }
     return json(200, { ...data, _left: data?.is_plant === false ? q.left + 1 : q.left, _member: q.member });
   } catch (e) {
     if (q && e.code === undefined) await refundScan(q.who, context);
+    await recordError(e.code || (e.status === 429 ? "ai_limit" : e.status === 503 ? "ai_busy" : e.status === 500 ? "setup" : "other"));
     return json(e.status || 500, { error: e.message || "Something went wrong. Try again.", code: e.code, signIn: !!e.signIn });
   }
 };
